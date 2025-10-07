@@ -238,6 +238,7 @@ fun LoginScreenPreview(){
     // Crear un navController de manera ficticia para fines de la vista previa
     val navController = rememberNavController()
 
+
     // Puedes usar un ViewModel simulado aquí si no tienes acceso a uno real
     val vm = LoginViewModel() // Suponiendo que LoginViewModel está correctamente configurado para la vista previa
 
