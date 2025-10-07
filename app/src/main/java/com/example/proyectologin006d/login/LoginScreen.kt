@@ -189,41 +189,20 @@ fun LoginScreen(
             )  // Fin username
 
 
-            if(state.error !=null){
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text=state.error ?:"",
-                color=MaterialTheme.colorScheme.primary,
-                fontWeight= FontWeight.Bold
-            )// fin text
-
-            }// fin if
 
 // agregar un espacio entre la imagen y el boton
 
                 Spacer(modifier = Modifier.height(66.dp))
 
-                Button(onClick = {/* accion futura*/
-                vm.submit {user ->
-                    navController.navigate("muestraDatos/$user")
-                    {// inicio navega
-                    popUpTo("login")  {inclusive = true}  // no volver al login con BACK
-                    launchSingleTop = true  // evite que se cree una nueva instancia del destino
-                    }// fin  navega
-                }// fin submit
+                Button(onClick = {}// fin onClik
 
-                },// fin onClik
 
-                    enabled=!state.isLoading,
-                    modifier = Modifier.fillMaxWidth(0.6f)
                 ) // fin BUtton
 
 
-
                 {
-                    //Text("Presioname")
-                    Text( if (state.isLoading) "Validando" else "Inicio sesion")
-                } // fin boton
+                    Text("Presioname")
+                }
 
 
 
