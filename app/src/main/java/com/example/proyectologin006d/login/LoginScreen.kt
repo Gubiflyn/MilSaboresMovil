@@ -194,14 +194,30 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(66.dp))
 
-                Button(onClick = {}// fin onClik
+                Button(onClick = {
+                    vm.submit{user ->
+                        navController.navigate("muestraDatos/$user")
+                        // navega  a la panttalla siguiente con el parametro
+                        {// condicviones de navegacion
 
+                            popUpTo("login") {inclusive=true} // no vuelve a login con back
+                            // evitar la creacxion de una nueva instancia
+                            launchSingleTop=true
+                        }// fin condiciones
+                    }// fin submit
+
+                },   // fin onClik
+                 enabled=!state.isLoading,
+                    modifier = Modifier.fillMaxWidth(0.6f)
 
                 ) // fin BUtton
 
 
                 {
-                    Text("Presioname")
+                 //   Text("Presioname")
+
+                    Text(if(state.isLoading) "Validando" else "Iniciar Sesion"  )
+
                 }
 
 
