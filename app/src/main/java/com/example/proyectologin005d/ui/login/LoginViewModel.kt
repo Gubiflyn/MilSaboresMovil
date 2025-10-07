@@ -1,10 +1,10 @@
-package com.example.proyectologin006d.ui.login
+package com.example.proyectologin005d.ui.login
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.proyectologin006d.data.repository.AuthRepository
+import com.example.proyectologin005d.data.repository.AuthRepository
 
 class LoginViewModel (
     private val repo: AuthRepository = AuthRepository()

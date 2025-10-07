@@ -1,4 +1,4 @@
-package com.example.proyectologin006d.ui.home
+package com.example.proyectologin005d.ui.home
 
 
 import androidx.compose.foundation.layout.*

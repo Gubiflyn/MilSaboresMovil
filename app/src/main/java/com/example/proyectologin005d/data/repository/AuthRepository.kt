@@ -1,6 +1,6 @@
-package com.example.proyectologin006d.data.repository
+package com.example.proyectologin005d.data.repository
 
-import com.example.proyectologin006d.data.model.Credential
+import com.example.proyectologin005d.data.model.Credential
 
 class AuthRepository (
     private val validCredential: Credential =Credential.Admin

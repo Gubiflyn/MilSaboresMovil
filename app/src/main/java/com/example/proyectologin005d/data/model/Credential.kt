@@ -1,4 +1,4 @@
-package com.example.proyectologin006d.data.model
+package com.example.proyectologin005d.data.model
 
 data class Credential (val username:String,val password:String){
     // objeto para acceder a la instancia

@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.proyectologin006d"
+    namespace = "com.example.proyectologin005d"
     compileSdk = 36
 
     defaultConfig {
