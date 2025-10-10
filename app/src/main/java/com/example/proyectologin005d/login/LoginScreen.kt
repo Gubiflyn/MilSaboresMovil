@@ -187,6 +187,15 @@ fun LoginScreen(
             )  // Fin username
 
 
+                if (state.error !=null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text =state.error ?:" ",  // es un if en caso else imprime blanco
+                        color=MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )// fin text
+
+                }// fin if
 
 // agregar un espacio entre la imagen y el boton
 
@@ -194,7 +203,8 @@ fun LoginScreen(
 
                 Button(onClick = {
                     vm.submit{user ->
-                        navController.navigate("muestraDatos/$user")
+                        //navController.navigate("muestraDatos/$user")
+                        navController.navigate("DrawerMenu/$user")
                         // navega  a la panttalla siguiente con el parametro
                         {// condicviones de navegacion
 
