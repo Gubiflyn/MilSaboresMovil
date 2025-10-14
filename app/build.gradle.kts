@@ -2,6 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    // Agregar esto para habilitar KAPT
+
+    kotlin("kapt")
+
 }
 
 android {
@@ -56,6 +61,13 @@ dependencies {
 // Íconos (core opcional) y EXTENDIDOS (¡este es el clave!)
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
+
+
+
+// Dependencias Room
+    implementation("androidx.room:room-runtime:2.6.1")  // Versión actualizada
+    kapt("androidx.room:room-compiler:2.6.1")          // Misma versión
+    implementation("androidx.room:room-ktx:2.6.1")     // Misma versión
 
 
 
