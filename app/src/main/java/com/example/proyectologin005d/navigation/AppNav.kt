@@ -10,8 +10,9 @@ import androidx.navigation.navArgument
 import com.example.proyectologin005d.login.LoginScreen
 import com.example.proyectologin005d.ui.home.MuestraDatosScreen
 import com.example.proyectologin005d.view.DrawerMenu
-import com.example.proyectologin005d.view.ProductoFormScreen
 import com.example.proyectologin005d.register.RegisterScreen   // ✅ Importa la pantalla de registro (asegúrate del package)
+import com.example.proyectologin005d.ui.home.HomeScreen
+
 
 /*
  * AppNav: Define el grafo de navegación de la app.
@@ -63,11 +64,10 @@ fun AppNav() {
         ) { backStackEntry ->
             val nombre = Uri.encode(backStackEntry.arguments?.getString("nombre") ?: "")
             val precio = backStackEntry.arguments?.getString("precio") ?: ""
-            ProductoFormScreen(
-                nombre = nombre,
-                precio = precio,
-                navController = navController
-            )
+
+        }
+        composable("home") {
+            HomeScreen(navController = navController)
         }
     } // fin NavHost
 } // fin AppNav

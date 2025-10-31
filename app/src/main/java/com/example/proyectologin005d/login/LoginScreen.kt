@@ -1,6 +1,7 @@
 package com.example.proyectologin005d.login
 
 // ====== IMPORTS ======
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,14 +34,12 @@ import com.example.proyectologin005d.ui.login.LoginViewModel
 fun LoginScreen(
     navController: NavController
 ) {
-    // ✅ Obtener el ViewModel aquí (NO como valor por defecto de un parámetro)
     val vm: LoginViewModel = viewModel()
     val state = vm.uiState
     var showPass by remember { mutableStateOf(false) }
 
-    // 🎨 Paleta principal
     val ColorScheme = darkColorScheme(
-        primary = Color(0xFF8B4513), // Marrón
+        primary = Color(0xFF8B4513),
         onPrimary = Color.White,
         onSurface = Color(0xFF333333)
     )
@@ -50,7 +49,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFFFF5E1)) // Fondo crema
+                .background(Color(0xFFFFF5E1))
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -98,7 +97,6 @@ fun LoginScreen(
                     .padding(bottom = 4.dp)
             )
 
-            // Campo de Email (blanco)
             OutlinedTextField(
                 value = state.username,
                 onValueChange = vm::onUsernameChange,
@@ -110,8 +108,8 @@ fun LoginScreen(
                     focusedBorderColor = Color(0xFF8B4513),
                     unfocusedBorderColor = Color(0xFFBDBDBD),
                     cursorColor = Color(0xFF8B4513),
-                    focusedContainerColor = Color.White,   // ✅ Fondo blanco
-                    unfocusedContainerColor = Color.White  // ✅ Fondo blanco
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
                 )
             )
 
@@ -128,7 +126,6 @@ fun LoginScreen(
                     .padding(bottom = 4.dp)
             )
 
-            // Campo de contraseña (blanco)
             OutlinedTextField(
                 value = state.password,
                 onValueChange = vm::onpasswordChange,
@@ -148,8 +145,8 @@ fun LoginScreen(
                     focusedBorderColor = Color(0xFF8B4513),
                     unfocusedBorderColor = Color(0xFFBDBDBD),
                     cursorColor = Color(0xFF8B4513),
-                    focusedContainerColor = Color.White,   // ✅ Fondo blanco
-                    unfocusedContainerColor = Color.White  // ✅ Fondo blanco
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
                 )
             )
 
@@ -167,8 +164,8 @@ fun LoginScreen(
             // ======= BOTÓN INICIAR SESIÓN =======
             Button(
                 onClick = {
-                    vm.submit { user ->
-                        navController.navigate("DrawerMenu/$user") {
+                    vm.submit { _ ->
+                        navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                             launchSingleTop = true
                         }
@@ -190,6 +187,28 @@ fun LoginScreen(
                 )
             }
 
+            // ======= NUEVO BOTÓN “ENTRAR COMO INVITADO” =======
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = {
+                    // 🔹 Navegar directo al home sin login
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(25.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color(0xFF8B4513)
+                ),
+                border = BorderStroke(1.dp, Color(0xFF8B4513))
+            ) {
+                Text("Entrar como invitado", fontWeight = FontWeight.Bold)
+            }
+
             // ======= OLVIDASTE / REGISTRO =======
             Spacer(modifier = Modifier.height(24.dp))
             Row(
@@ -202,7 +221,6 @@ fun LoginScreen(
                         color = Color(0x99000000)
                     )
                 )
-                // 👇 Hace clic y navega a la ruta "register"
                 Text(
                     text = "Registrarse",
                     style = MaterialTheme.typography.bodySmall.copy(
@@ -218,4 +236,10 @@ fun LoginScreen(
     }
 }
 
-
+// ======= PREVIEW =======
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    val navController = rememberNavController()
+    LoginScreen(navController = navController)
+}
