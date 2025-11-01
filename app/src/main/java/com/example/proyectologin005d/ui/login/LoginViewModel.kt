@@ -4,54 +4,47 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.proyectologin005d.data.model.User
 import com.example.proyectologin005d.data.repository.AuthRepository
-import kotlinx.coroutines.launch
+import com.example.proyectologin005d.session.SessionManager
 
-class LoginViewModel : ViewModel() {
 
-    private val repo = AuthRepository()
+
+class LoginViewModel(
+    private val repo: AuthRepository = AuthRepository()
+) : ViewModel() {
 
     var uiState by mutableStateOf(LoginUiState())
         private set
 
-    fun onUsernameChange(value: String) {
-        uiState = uiState.copy(username = value)
-    }
-
-    fun onPasswordChange(value: String) {
-        uiState = uiState.copy(password = value)
-    }
+    fun onUsernameChange(v: String) { uiState = uiState.copy(username = v) }
+    fun onPasswordChange(v: String) { uiState = uiState.copy(password = v) }
 
     /**
-     * Intenta login de cliente (email/clave) y, si no, admin (usuario/clave).
-     * onOk se invoca con el User resuelto.
+     * Autentica y, si es cliente válido, guarda el usuario en SessionManager.
+     * Llama al callback con el User cuando todo ok.
      */
-    fun submit(onOk: (User) -> Unit) {
-        val emailOrUser = uiState.username.trim()
-        val pass = uiState.password
+    fun submit(onSuccess: (User) -> Unit) {
+        uiState = uiState.copy(isLoading = true, error = null)
+        val email = uiState.username.trim()
+        val pass  = uiState.password
 
-        viewModelScope.launch {
-            uiState = uiState.copy(isLoading = true, error = null)
+        // Admin: sin descuentos, no seteamos usuario de sesión
+        if (repo.loginAdmin(email, pass)) {
+            uiState = uiState.copy(isLoading = false)
+            onSuccess(
+                User(nombre = "Administrador", email = email, edad = 0, codigoDescuento = null, password = null)
+            )
+            return
+        }
 
-            // Cliente (correo/clave)
-            val cliente = repo.loginCliente(emailOrUser, pass)
-            if (cliente != null) {
-                uiState = uiState.copy(isLoading = false)
-                onOk(cliente)
-                return@launch
-            }
-
-            // Admin (usuario/clave)
-            val adminOk = repo.loginAdmin(emailOrUser, pass)
-            if (adminOk) {
-                uiState = uiState.copy(isLoading = false)
-                onOk(User(nombre = "Administrador", email = emailOrUser, edad = 0))
-                return@launch
-            }
-
-            // Error
+        // Cliente:
+        val user = repo.loginCliente(email, pass)
+        if (user != null) {
+            SessionManager.currentUser = user   // <- AQUÍ se fija la sesión
+            uiState = uiState.copy(isLoading = false)
+            onSuccess(user)
+        } else {
             uiState = uiState.copy(
                 isLoading = false,
                 error = "Credenciales inválidas"

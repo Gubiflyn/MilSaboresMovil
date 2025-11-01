@@ -20,6 +20,7 @@ fun CartScreen(
     val items by vm.items.collectAsState()
     val totales by vm.totales.collectAsState()
 
+    // helper sin que el IDE lo marque en rojo
     fun clp(n: Int) = n.coerceAtLeast(0).toString()
 
     Scaffold(
@@ -30,13 +31,21 @@ fun CartScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                // Subtotal
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text("Subtotal:")
                     Text("$${clp(totales.subtotal)}")
                 }
 
+                // Descuento (solo si existe)
                 if (totales.descuento > 0) {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text("Descuento", color = MaterialTheme.colorScheme.primary)
                         Text("-$${clp(totales.descuento)}", color = MaterialTheme.colorScheme.primary)
                     }
@@ -44,7 +53,11 @@ fun CartScreen(
 
                 HorizontalDivider(Modifier.padding(vertical = 8.dp))
 
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                // Total
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text("Total:", fontWeight = FontWeight.Bold)
                     Text("$${clp(totales.total)}", fontWeight = FontWeight.Bold)
                 }
@@ -60,9 +73,7 @@ fun CartScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(44.dp)
-                ) {
-                    Text("Pagar")
-                }
+                ) { Text("Pagar") }
             }
         }
     ) { padding ->
@@ -73,11 +84,16 @@ fun CartScreen(
                 .padding(16.dp)
         ) {
             if (items.isEmpty()) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Tu carrito está vacío")
-                }
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) { Text("Tu carrito está vacío") }
             } else {
                 items.forEach { it ->
+                    val debug = "user=${vm.debugUserName()}  50%=${vm.debugTiene50()}  10%=${vm.debugTiene10()}"
+                    Text(debug, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                    Spacer(Modifier.height(4.dp))
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

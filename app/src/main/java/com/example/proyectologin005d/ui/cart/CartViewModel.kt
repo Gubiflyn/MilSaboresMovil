@@ -19,12 +19,13 @@ class CartViewModel : ViewModel() {
 
     private var user: User? = null
 
-    /** Llamar cuando cambia el usuario (login / logout) */
+    /** 🔹 Se llama desde AppNav al iniciar sesión o cerrar sesión */
     fun setUser(u: User?) {
         user = u
         actualizarTotales()
     }
 
+    /** 🔹 Agrega productos al carrito */
     fun add(nombre: String, precio: Int) {
         val lista = _items.value.toMutableList()
         val idx = lista.indexOfFirst { it.nombre == nombre }
@@ -38,6 +39,7 @@ class CartViewModel : ViewModel() {
         actualizarTotales()
     }
 
+    /** 🔹 Quita un producto o reduce cantidad */
     fun remove(nombre: String) {
         val lista = _items.value.toMutableList()
         val idx = lista.indexOfFirst { it.nombre == nombre }
@@ -50,11 +52,13 @@ class CartViewModel : ViewModel() {
         actualizarTotales()
     }
 
+    /** 🔹 Limpia el carrito */
     fun clear() {
         _items.value = emptyList()
         actualizarTotales()
     }
 
+    /** 🔹 Calcula totales y descuentos según usuario */
     private fun actualizarTotales() {
         val subtotal = _items.value.sumOf { it.precio * it.cantidad }
 
@@ -67,4 +71,9 @@ class CartViewModel : ViewModel() {
         val total = (subtotal - descuento).coerceAtLeast(0)
         _totales.value = Totales(subtotal, descuento, total)
     }
+
+    fun debugUserName() = user?.nombre ?: "null"
+    fun debugTiene50() = (user?.tiene50 == true).toString()
+    fun debugTiene10() = (user?.tiene10 == true).toString()
+
 }

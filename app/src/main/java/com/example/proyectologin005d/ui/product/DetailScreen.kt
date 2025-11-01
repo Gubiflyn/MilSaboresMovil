@@ -33,8 +33,7 @@ fun DetailScreen(
     LaunchedEffect(codigo) {
         try {
             val repo = PastelRepository(PastelDatabase.getInstance(ctx).pastelDao())
-            val p = withContext(Dispatchers.IO) { repo.getByCodigo(codigo) }
-            pastel = p
+            pastel = withContext(Dispatchers.IO) { repo.getByCodigo(codigo) }
         } catch (e: Exception) {
             error = e.message
         } finally {
@@ -65,7 +64,6 @@ fun DetailScreen(
                 error != null -> Text("Error: $error", color = MaterialTheme.colorScheme.error)
                 pastel == null -> Text("Producto no encontrado.")
                 else -> {
-                    // Imagen
                     val imgId = remember(pastel!!.imagen) {
                         pastel!!.imagen?.let { name ->
                             ctx.resources.getIdentifier(name, "drawable", ctx.packageName)
@@ -88,8 +86,8 @@ fun DetailScreen(
                     Text("Código: ${pastel!!.codigo}")
                     Text("Categoría: ${pastel!!.categoria}")
                     Spacer(Modifier.height(6.dp))
-                    if (!pastel!!.descripcion.isNullOrBlank()) {
-                        Text(pastel!!.descripcion!!)
+                    pastel!!.descripcion?.let {
+                        Text(it)
                         Spacer(Modifier.height(12.dp))
                     }
                     Text("Precio: $${pastel!!.precio}", style = MaterialTheme.typography.titleMedium)
@@ -98,14 +96,10 @@ fun DetailScreen(
                     Button(
                         onClick = {
                             val p = pastel ?: return@Button
-                            onAddToCart(p.nombre, p.precio)
-                            // Si quieres volver atrás:
-                            // navController.popBackStack()
+                            onAddToCart(p.nombre, p.precio) // <- agrega al MISMO cartVm
                         },
                         modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Agregar al carrito")
-                    }
+                    ) { Text("Agregar al carrito") }
                 }
             }
         }
