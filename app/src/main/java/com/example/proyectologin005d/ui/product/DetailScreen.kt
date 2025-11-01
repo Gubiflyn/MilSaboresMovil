@@ -2,12 +2,13 @@ package com.example.proyectologin005d.ui.product
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -19,8 +20,12 @@ import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(navController: NavController, codigo: String) {
-    val ctx = androidx.compose.ui.platform.LocalContext.current
+fun DetailScreen(
+    navController: NavController,
+    codigo: String,
+    onAddToCart: (nombre: String, precio: Int) -> Unit
+) {
+    val ctx = LocalContext.current
     var pastel by remember { mutableStateOf<Pastel?>(null) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -60,7 +65,7 @@ fun DetailScreen(navController: NavController, codigo: String) {
                 error != null -> Text("Error: $error", color = MaterialTheme.colorScheme.error)
                 pastel == null -> Text("Producto no encontrado.")
                 else -> {
-                    // 🔹 IMAGEN GRANDE (simple)
+                    // Imagen
                     val imgId = remember(pastel!!.imagen) {
                         pastel!!.imagen?.let { name ->
                             ctx.resources.getIdentifier(name, "drawable", ctx.packageName)
@@ -89,8 +94,14 @@ fun DetailScreen(navController: NavController, codigo: String) {
                     }
                     Text("Precio: $${pastel!!.precio}", style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.height(16.dp))
+
                     Button(
-                        onClick = { /* TODO: agregar al carrito */ },
+                        onClick = {
+                            val p = pastel ?: return@Button
+                            onAddToCart(p.nombre, p.precio)
+                            // Si quieres volver atrás:
+                            // navController.popBackStack()
+                        },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Agregar al carrito")
@@ -100,5 +111,3 @@ fun DetailScreen(navController: NavController, codigo: String) {
         }
     }
 }
-
-

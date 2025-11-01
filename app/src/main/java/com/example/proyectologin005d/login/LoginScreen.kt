@@ -1,12 +1,10 @@
 package com.example.proyectologin005d.login
 
-// ====== IMPORTS ======
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,24 +26,25 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.proyectologin005d.R
 import com.example.proyectologin005d.ui.login.LoginViewModel
+import com.example.proyectologin005d.ui.login.LoginUiState
+import com.example.proyectologin005d.data.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    navController: NavController
+    navController: NavController,
+    vm: LoginViewModel = viewModel()
 ) {
-    val vm: LoginViewModel = viewModel()
-    val state = vm.uiState
+    val state: LoginUiState = vm.uiState
     var showPass by remember { mutableStateOf(false) }
 
-    val ColorScheme = darkColorScheme(
+    val colorScheme = darkColorScheme(
         primary = Color(0xFF8B4513),
         onPrimary = Color.White,
         onSurface = Color(0xFF333333)
     )
 
-    MaterialTheme(colorScheme = ColorScheme) {
-
+    MaterialTheme(colorScheme = colorScheme) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -53,9 +52,8 @@ fun LoginScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(Modifier.height(60.dp))
 
-            // ======= LOGO =======
-            Spacer(modifier = Modifier.height(60.dp))
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo Mil Sabores",
@@ -65,8 +63,7 @@ fun LoginScreen(
                 contentScale = ContentScale.Fit
             )
 
-            // ======= TÍTULOS =======
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))
             Text(
                 text = "Inicia Sesión",
                 style = MaterialTheme.typography.headlineSmall.copy(
@@ -77,15 +74,13 @@ fun LoginScreen(
             )
             Text(
                 text = "¡Hola! un gusto volver a verte",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = Color(0x99000000)
-                ),
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color(0x99000000)),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
-            // ======= FORMULARIO =======
+            // Email
             Text(
                 text = "Email",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -96,9 +91,8 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(bottom = 4.dp)
             )
-
             OutlinedTextField(
-                value = state.username,
+                value = state.username,                  // <-- SIN "!!"
                 onValueChange = vm::onUsernameChange,
                 placeholder = { Text("ejemplo@gmail.com") },
                 singleLine = true,
@@ -113,8 +107,9 @@ fun LoginScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
+            // Password
             Text(
                 text = "Password",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -125,19 +120,15 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(bottom = 4.dp)
             )
-
             OutlinedTextField(
                 value = state.password,
-                onValueChange = vm::onpasswordChange,
+                onValueChange = vm::onPasswordChange,   // <-- nombre correcto
                 placeholder = { Text("••••••••") },
                 singleLine = true,
                 visualTransformation = if (showPass) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     TextButton(onClick = { showPass = !showPass }) {
-                        Text(
-                            if (showPass) "Ocultar" else "Ver",
-                            color = Color(0xFF8B4513)
-                        )
+                        Text(if (showPass) "Ocultar" else "Ver", color = Color(0xFF8B4513))
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -151,20 +142,20 @@ fun LoginScreen(
             )
 
             if (state.error != null) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(Modifier.height(8.dp))
                 Text(
-                    text = state.error ?: "",
+                    text = state.error,
                     color = Color(0xFF8B4513),
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
-            // ======= BOTÓN INICIAR SESIÓN =======
+            // Iniciar sesión
             Button(
                 onClick = {
-                    vm.submit { _ ->
+                    vm.submit { user: User ->               // <-- usa submit y tipa el callback con User
                         navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                             launchSingleTop = true
@@ -175,7 +166,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                shape = RoundedCornerShape(25.dp),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(25.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF8B4513),
                     contentColor = Color.White
@@ -187,11 +178,11 @@ fun LoginScreen(
                 )
             }
 
-            // ======= NUEVO BOTÓN “ENTRAR COMO INVITADO” =======
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
+
+            // Invitado
             OutlinedButton(
                 onClick = {
-                    // 🔹 Navegar directo al home sin login
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                         launchSingleTop = true
@@ -200,26 +191,22 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                shape = RoundedCornerShape(25.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color(0xFF8B4513)
-                ),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(25.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF8B4513)),
                 border = BorderStroke(1.dp, Color(0xFF8B4513))
             ) {
                 Text("Entrar como invitado", fontWeight = FontWeight.Bold)
             }
 
-            // ======= OLVIDASTE / REGISTRO =======
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "¿Olvidaste tu contraseña?",
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color(0x99000000)
-                    )
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color(0x99000000))
                 )
                 Text(
                     text = "Registrarse",
@@ -227,16 +214,13 @@ fun LoginScreen(
                         color = Color(0xFF8B4513),
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier.clickable {
-                        navController.navigate("register")
-                    }
+                    modifier = Modifier.clickable { navController.navigate("register") }
                 )
             }
         }
     }
 }
 
-// ======= PREVIEW =======
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
