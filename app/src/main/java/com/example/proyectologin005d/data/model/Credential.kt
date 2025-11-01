@@ -6,4 +6,4 @@ data class Credential (val username:String,val password:String){
     val Admin= Credential(username="admin", password = "123")
     }
 
-}//fin data
+}//fin data XD
