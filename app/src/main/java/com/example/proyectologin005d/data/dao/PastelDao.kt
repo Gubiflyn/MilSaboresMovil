@@ -8,10 +8,11 @@ import com.example.proyectologin005d.data.model.Pastel
 
 @Dao
 interface PastelDao {
-    @Query("SELECT * FROM pasteles")
-    suspend fun getAll(): List<Pastel>
 
-    @Query("SELECT * FROM pasteles WHERE codigo = :codigo LIMIT 1")
+    @Query("SELECT * FROM pasteles")
+    suspend fun getAll(): List<Pastel>   // <-- nombre correcto
+
+    @Query("SELECT * FROM pasteles WHERE codigo = :codigo LIMIT 1") // <-- sin espacio
     suspend fun getByCodigo(codigo: String): Pastel?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

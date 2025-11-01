@@ -1,19 +1,19 @@
 package com.example.proyectologin005d.data.repository
 
+import com.example.proyectologin005d.data.dao.PastelDao
 import com.example.proyectologin005d.data.model.Pastel
-import com.example.proyectologin005d.data.source.LocalPastelData
 
-class PastelRepository {
+class PastelRepository(private val dao: PastelDao) {
 
-    fun getAllPasteles(): List<Pastel> {
-        return LocalPastelData.pastelesList
+    suspend fun seedIfEmpty() {
+        if (dao.getAll().isEmpty()) {                 // <-- getAll()
+            dao.insertAll(LocalPastelData.seed)       // <-- nombre real de tu lista
+        }
     }
 
-    fun getByCategoria(categoria: String): List<Pastel> {
-        return LocalPastelData.pastelesList.filter { it.categoria == categoria }
-    }
+    suspend fun getAllPasteles(): List<Pastel> = dao.getAll()
 
-    fun getByCodigo(codigo: String): Pastel? {
-        return LocalPastelData.pastelesList.find { it.codigo == codigo }
-    }
+    suspend fun getByCodigo(codigo: String): Pastel? = dao.getByCodigo(codigo)
 }
+
+
