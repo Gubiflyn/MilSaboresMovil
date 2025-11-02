@@ -7,9 +7,24 @@ import androidx.room.RoomDatabase
 import com.example.proyectologin005d.data.dao.PastelDao
 import com.example.proyectologin005d.data.model.Pastel
 
-@Database(entities = [Pastel::class], version = 2, exportSchema = false) // ↑ sube versión
+// ⬇️ Agregados para historial
+import com.example.proyectologin005d.data.model.Order
+import com.example.proyectologin005d.data.model.OrderItem
+import com.example.proyectologin005d.data.dao.OrderDao
+
+@Database(
+    entities = [
+        Pastel::class,
+        // ⬇️ Agregados para historial
+        Order::class,
+        OrderItem::class
+    ],
+    version = 3,
+    exportSchema = false
+)
 abstract class PastelDatabase : RoomDatabase() {
     abstract fun pastelDao(): PastelDao
+    abstract fun orderDao(): OrderDao
 
     companion object {
         @Volatile private var INSTANCE: PastelDatabase? = null
@@ -20,12 +35,8 @@ abstract class PastelDatabase : RoomDatabase() {
                     PastelDatabase::class.java,
                     "pasteles.db"
                 )
-                    .fallbackToDestructiveMigration()  // ← recrea con la nueva version
+                    .fallbackToDestructiveMigration()   // ⬅️ fuerza recrear si hay cambios
                     .build().also { INSTANCE = it }
             }
     }
 }
-
-
-
-

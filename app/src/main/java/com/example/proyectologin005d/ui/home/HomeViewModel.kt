@@ -6,32 +6,43 @@ import com.example.proyectologin005d.data.model.Pastel
 import com.example.proyectologin005d.data.repository.PastelRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 data class HomeUiState(
     val loading: Boolean = true,
     val items: List<Pastel> = emptyList(),
-    val filtroCategoria: String? = null,   // null = todos
+    val filtroCategoria: String? = null,
     val filtrados: List<Pastel> = emptyList(),
     val error: String? = null
 )
 
-class HomeViewModel(private val repo: PastelRepository) : ViewModel() {
+class HomeViewModel(
+    private val repo: PastelRepository
+) : ViewModel() {
+
     private val _ui = MutableStateFlow(HomeUiState())
     val ui: StateFlow<HomeUiState> = _ui
 
     init {
+        // 1) Seed si está vacío
         viewModelScope.launch {
             try {
                 repo.seedIfEmpty()
-                val all = repo.getAllPasteles()
-                _ui.value = _ui.value.copy(
-                    loading = false,
-                    items = all,
-                    filtrados = all
-                )
             } catch (e: Exception) {
                 _ui.value = _ui.value.copy(loading = false, error = e.message)
+            }
+        }
+        // 2) Observar cambios de Room en tiempo real
+        viewModelScope.launch {
+            repo.observeAll().collectLatest { list ->
+                _ui.value = _ui.value.copy(
+                    loading = false,
+                    items = list,
+                    filtrados = if (_ui.value.filtroCategoria.isNullOrBlank()) list
+                    else list.filter { it.categoria.equals(_ui.value.filtroCategoria, ignoreCase = true) },
+                    error = null
+                )
             }
         }
     }
@@ -42,5 +53,8 @@ class HomeViewModel(private val repo: PastelRepository) : ViewModel() {
         else base.filter { it.categoria.equals(cat, ignoreCase = true) }
         _ui.value = _ui.value.copy(filtroCategoria = cat, filtrados = lista)
     }
-}
 
+    fun refresh() {
+        // opcional; ya no es crítico porque observeAll() mantiene la UI al día
+    }
+}

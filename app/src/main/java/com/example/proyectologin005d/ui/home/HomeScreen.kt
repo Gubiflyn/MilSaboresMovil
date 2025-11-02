@@ -83,7 +83,7 @@ fun HomeScreen(
                     current = "home",
                     onHome = { /* ya estás en home */ },
                     onSearch = { navController.navigate("catalog") },
-                    onHistory = { /* navController.navigate("historial") */ },
+                    onHistory = { navController.navigate("history") }, // 👈 activa historial
                     onProfile = { navController.navigate("profile") },
                     brown = Brown
                 )

@@ -1,6 +1,15 @@
 package com.example.proyectologin005d.ui.cart
 
 import androidx.lifecycle.ViewModel
+
+// ⬇️ AGREGADOS (historial)
+import androidx.lifecycle.viewModelScope
+import com.example.proyectologin005d.data.model.Order
+import com.example.proyectologin005d.data.model.OrderItem
+import com.example.proyectologin005d.data.repository.OrderRepository
+import kotlinx.coroutines.launch
+// ⬆️ AGREGADOS
+
 import com.example.proyectologin005d.data.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +27,13 @@ class CartViewModel : ViewModel() {
     val totales = _totales.asStateFlow()
 
     private var user: User? = null
+
+    // ⬇️ AGREGADO: repo para guardar órdenes en Room
+    private var orderRepo: OrderRepository? = null
+    fun setOrderRepository(repo: OrderRepository) {
+        orderRepo = repo
+    }
+    // ⬆️ AGREGADO
 
     /** 🔹 Se llama desde AppNav al iniciar sesión o cerrar sesión */
     fun setUser(u: User?) {
@@ -76,4 +92,37 @@ class CartViewModel : ViewModel() {
     fun debugTiene50() = (user?.tiene50 == true).toString()
     fun debugTiene10() = (user?.tiene10 == true).toString()
 
+    // ⬇️ AGREGADO: guardar compra en historial y luego limpiar carrito
+    fun placeOrder(userEmail: String?) {
+        val email = userEmail ?: return
+        val repo = orderRepo ?: return
+
+        // Construye los ítems de la orden desde el carrito actual
+        val itemsOrder = _items.value.map { line ->
+            OrderItem(
+                id = 0L,          // autogenerado por Room
+                orderId = 0L,     // se asigna tras insertar la orden
+                codigo = line.nombre, // si no tienes código, usamos el nombre
+                nombre = line.nombre,
+                precio = line.precio,
+                cantidad = line.cantidad,
+                subtotal = line.precio * line.cantidad
+            )
+        }
+
+        val total = itemsOrder.sumOf { it.subtotal }
+        val order = Order(
+            id = 0L, // autogenerado
+            userEmail = email,
+            fechaMillis = System.currentTimeMillis(),
+            total = total,
+            itemsCount = itemsOrder.size
+        )
+
+        viewModelScope.launch {
+            repo.save(order, itemsOrder)
+            clear() // mantiene tu flujo actual
+        }
+    }
+    // ⬆️ AGREGADO
 }

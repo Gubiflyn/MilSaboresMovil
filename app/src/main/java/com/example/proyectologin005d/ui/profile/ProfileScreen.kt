@@ -58,7 +58,7 @@ fun ProfileScreen(
                 current = "profile",
                 onHome = { navController.navigate("home") },
                 onSearch = { navController.navigate("catalog") },
-                onHistory = { /* navController.navigate("history") */ },
+                onHistory = { navController.navigate("history") }, // 👈 activa historial
                 onProfile = { /* ya estás en perfil */ },
                 brown = Brown
             )

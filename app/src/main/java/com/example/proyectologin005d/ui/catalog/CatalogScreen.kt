@@ -39,9 +39,7 @@ fun CatalogScreen(
     navController: NavController,
     viewModel: HomeViewModel
 ) {
-    // Limpia cualquier filtro previo
-    LaunchedEffect(Unit) { viewModel.setCategoria(null) }
-
+    // ⚠️ No forzamos setCategoria(null) aquí para no vaciar la lista en ciertos VM
     val ui by viewModel.ui.collectAsState()
 
     // Paleta (clarita)
@@ -51,23 +49,33 @@ fun CatalogScreen(
     val TextMain = Color(0xFF3B2A1A)  // café oscuro
     val TextSub = Color(0xFF4B3621)   // café medio
 
-    // Ordena por categoría y luego por nombre
-    val listaOrdenada = remember(ui.items) {
-        ui.items.sortedWith(
+    // 👇 NUEVO: elige la lista base correcta según si hay filtro activo
+    val base = remember(ui.items, ui.filtrados, ui.filtroCategoria) {
+        if (ui.filtroCategoria.isNullOrBlank()) ui.items else ui.filtrados
+    }
+
+    // Ordena por categoría (según ORDERED_CATEGORIES) y luego por nombre
+    val listaOrdenada = remember(base) {
+        base.sortedWith(
             compareBy(
-                { ORDERED_CATEGORIES.indexOf(it.categoria).let { idx -> if (idx == -1) Int.MAX_VALUE else idx } },
+                { catOrderIndex(it.categoria) },
                 { it.nombre }
             )
         )
     }
 
-    // Agrupa por categoría (sólo las que tienen productos)
+    // Agrupa por las categorías reales presentes y ordénalas según ORDERED_CATEGORIES
     val porCategoria = remember(listaOrdenada) {
-        ORDERED_CATEGORIES.associateWith { cat -> listaOrdenada.filter { it.categoria == cat } }
-            .filterValues { it.isNotEmpty() }
+        val grouped = listaOrdenada.groupBy { it.categoria }
+        val ordenKeys = grouped.keys.sortedWith(
+            compareBy(
+                { catOrderIndex(it) },
+                { it } // alfabético para las no listadas
+            )
+        )
+        ordenKeys.associateWith { grouped[it].orEmpty() }
     }
 
-    // Usa esquema CLARO en esta pantalla
     MaterialTheme(
         colorScheme = lightColorScheme(
             primary = Brown,
@@ -94,10 +102,10 @@ fun CatalogScreen(
             },
             bottomBar = {
                 HomeBottomBar(
-                    current = "catalog",                       // 👈 marca esta pestaña
+                    current = "catalog",
                     onHome = { navController.navigate("home") },
-                    onSearch = { /* ya estás en catálogo */ },  // o navController.navigate("catalog")
-                    onHistory = { /* navController.navigate("history") */ },
+                    onSearch = { /* ya estás en catálogo */ },
+                    onHistory = { navController.navigate("history") },
                     onProfile = { navController.navigate("profile") },
                     brown = Brown
                 )
@@ -123,7 +131,6 @@ fun CatalogScreen(
 
                     porCategoria.forEach { (categoria, productos) ->
 
-                        // Encabezado de categoría
                         item {
                             Surface(color = Cream) {
                                 Text(
@@ -138,7 +145,6 @@ fun CatalogScreen(
                             }
                         }
 
-                        // Items
                         items(productos, key = { it.codigo }) { p ->
                             Card(
                                 colors = CardDefaults.cardColors(
@@ -151,7 +157,6 @@ fun CatalogScreen(
                                     .padding(vertical = 2.dp),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
-                                // 🔹 Resolver id del drawable de forma simple (por p.imagen)
                                 val ctx = LocalContext.current
                                 val imgId = remember(p.imagen) {
                                     p.imagen?.let { name ->
@@ -179,10 +184,7 @@ fun CatalogScreen(
                                         trailingIconColor = Brown
                                     ),
                                     headlineContent = {
-                                        Text(
-                                            p.nombre,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
+                                        Text(p.nombre, fontWeight = FontWeight.SemiBold)
                                     },
                                     supportingContent = {
                                         Text("${p.categoria.uppercase()} • $${p.precio}")
@@ -198,7 +200,6 @@ fun CatalogScreen(
                             }
                         }
 
-                        // Separación entre categorías
                         item { Spacer(Modifier.height(12.dp)) }
                     }
 
@@ -215,4 +216,9 @@ fun CatalogScreen(
             }
         }
     }
+}
+
+private fun catOrderIndex(cat: String): Int {
+    val idx = ORDERED_CATEGORIES.indexOf(cat)
+    return if (idx == -1) Int.MAX_VALUE else idx
 }
