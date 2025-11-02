@@ -28,16 +28,44 @@ import com.example.proyectologin005d.R
 import com.example.proyectologin005d.data.model.User
 import com.example.proyectologin005d.ui.login.LoginUiState
 import com.example.proyectologin005d.ui.login.LoginViewModel
+import android.util.Patterns // ← CORRECTO
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     navController: NavController,
-    onLoginSuccess: (User) -> Unit,        // ← NUEVO
+    onLoginSuccess: (User) -> Unit,
     vm: LoginViewModel = viewModel()
 ) {
     val state: LoginUiState = vm.uiState
     var showPass by remember { mutableStateOf(false) }
+
+    // ---- Validaciones visibles ----
+    val emailValid by remember(state.username) {
+        mutableStateOf(
+            state.username.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(state.username).matches()
+        )
+    }
+    val passValid by remember(state.password) { mutableStateOf(state.password.length >= 6) }
+
+    val emailErrorMsg by remember(state.username) {
+        mutableStateOf(
+            when {
+                state.username.isBlank() -> "El email es requerido"
+                !Patterns.EMAIL_ADDRESS.matcher(state.username).matches() -> "Formato inválido"
+                else -> null
+            }
+        )
+    }
+    val passErrorMsg by remember(state.password) {
+        mutableStateOf(
+            when {
+                state.password.isBlank() -> "La contraseña es requerida"
+                state.password.length < 6 -> "Mínimo 6 caracteres"
+                else -> null
+            }
+        )
+    }
 
     val scheme = darkColorScheme(
         primary = Color(0xFF8B4513),
@@ -98,6 +126,8 @@ fun LoginScreen(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
+                isError = emailErrorMsg != null,
+                supportingText = { if (emailErrorMsg != null) Text(emailErrorMsg!!) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF8B4513),
                     unfocusedBorderColor = Color(0xFFBDBDBD),
@@ -131,6 +161,8 @@ fun LoginScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
+                isError = passErrorMsg != null,
+                supportingText = { if (passErrorMsg != null) Text(passErrorMsg!!) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF8B4513),
                     unfocusedBorderColor = Color(0xFFBDBDBD),
@@ -140,10 +172,10 @@ fun LoginScreen(
                 )
             )
 
-            if (state.error != null) {
+            state.error?.let {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = state.error,
+                    text = it,
                     color = Color(0xFF8B4513),
                     fontWeight = FontWeight.Bold
                 )
@@ -153,11 +185,11 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    vm.submit { u ->          // ← devuelve el User validado
-                        onLoginSuccess(u)     // ← lo entregamos a AppNav/AuthVM
+                    if (emailValid && passValid) {
+                        vm.submit { u -> onLoginSuccess(u) }
                     }
                 },
-                enabled = !state.isLoading,
+                enabled = !state.isLoading && emailValid && passValid,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

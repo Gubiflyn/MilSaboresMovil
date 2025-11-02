@@ -1,12 +1,10 @@
 package com.example.proyectologin005d.register
 
-// ====== IMPORTS ======
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -28,20 +26,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.proyectologin005d.R
 import com.example.proyectologin005d.ui.register.RegisterViewModel
+import android.util.Patterns // ← CORRECTO
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
     vm: RegisterViewModel = viewModel()
 ) {
-    // ====== Paleta consistente con Login ======
     val Brown = Color(0xFF8B4513)
     val Cream = Color(0xFFFFF5E1)
 
-    // ====== Estado del ViewModel (nombre/email/password/confirm) ======
     val state = vm.uiState
 
-    // ====== Estado local para campos adicionales ======
     var apellidos by remember { mutableStateOf("") }
     var telefono by remember { mutableStateOf("") }
     var fechaNac by remember { mutableStateOf("") }
@@ -51,7 +47,45 @@ fun RegisterScreen(
     var codDesc by remember { mutableStateOf("") }
     var localError by remember { mutableStateOf<String?>(null) }
 
-    // Colores para inputs (blancos con borde marrón)
+    // ---- Validaciones visibles ----
+    val emailValid by remember(state.email) {
+        mutableStateOf(
+            state.email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(state.email).matches()
+        )
+    }
+    val passValid by remember(state.password) { mutableStateOf(state.password.length >= 6) }
+    val passMatch by remember(state.password, state.confirmPassword) {
+        mutableStateOf(state.confirmPassword == state.password)
+    }
+
+    val emailErrorMsg by remember(state.email) {
+        mutableStateOf(
+            when {
+                state.email.isBlank() -> "Email requerido"
+                !Patterns.EMAIL_ADDRESS.matcher(state.email).matches() -> "Email inválido"
+                else -> null
+            }
+        )
+    }
+    val passErrorMsg by remember(state.password) {
+        mutableStateOf(
+            when {
+                state.password.isBlank() -> "Contraseña requerida"
+                state.password.length < 6 -> "Mínimo 6 caracteres"
+                else -> null
+            }
+        )
+    }
+    val pass2ErrorMsg by remember(state.confirmPassword, state.password) {
+        mutableStateOf(
+            when {
+                state.confirmPassword.isBlank() -> "Confirme su contraseña"
+                state.confirmPassword != state.password -> "No coincide"
+                else -> null
+            }
+        )
+    }
+
     val inputColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = Brown,
         unfocusedBorderColor = Color(0xFFBDBDBD),
@@ -72,14 +106,13 @@ fun RegisterScreen(
                 .fillMaxSize()
                 .background(Cream)
         ) {
-            // ===== Contenido scrolleable =====
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 20.dp),
                 contentPadding = PaddingValues(bottom = 28.dp)
             ) {
-                // Logo
+                // Logo + título
                 item {
                     Spacer(Modifier.height(48.dp))
                     Row(
@@ -139,6 +172,7 @@ fun RegisterScreen(
                         placeholder = "ejemplo@gmail.com",
                         colors = inputColors
                     )
+                    if (emailErrorMsg != null) Text(emailErrorMsg!!, color = Brown, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(12.dp))
                 }
 
@@ -150,6 +184,7 @@ fun RegisterScreen(
                         onChange = vm::onPasswordChange,
                         colors = inputColors
                     )
+                    if (passErrorMsg != null) Text(passErrorMsg!!, color = Brown, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(12.dp))
                 }
 
@@ -161,6 +196,7 @@ fun RegisterScreen(
                         onChange = vm::onConfirmPasswordChange,
                         colors = inputColors
                     )
+                    if (pass2ErrorMsg != null) Text(pass2ErrorMsg!!, color = Brown, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(12.dp))
                 }
 
@@ -251,8 +287,10 @@ fun RegisterScreen(
                 item {
                     Button(
                         onClick = {
-                            // Validaciones adicionales a las que hace el VM
                             localError = when {
+                                !emailValid -> emailErrorMsg
+                                !passValid -> passErrorMsg
+                                !passMatch -> pass2ErrorMsg
                                 apellidos.isBlank() -> "Ingresa tus apellidos"
                                 fechaNac.isBlank() -> "Ingresa tu fecha de nacimiento"
                                 direccion.isBlank() -> "Ingresa tu dirección"
@@ -262,7 +300,6 @@ fun RegisterScreen(
                             }
                             if (localError == null) {
                                 vm.submit {
-                                    // Volver al login al terminar
                                     navController.navigate("login") {
                                         popUpTo("register") { inclusive = true }
                                         launchSingleTop = true
@@ -270,7 +307,7 @@ fun RegisterScreen(
                                 }
                             }
                         },
-                        enabled = !state.isLoading,
+                        enabled = !state.isLoading && emailValid && passValid && passMatch,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
@@ -288,7 +325,7 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Botón secundario: Iniciar sesión (navega al LoginScreen)
+                // Botón secundario: Iniciar sesión
                 item {
                     OutlinedButton(
                         onClick = {
@@ -311,7 +348,7 @@ fun RegisterScreen(
                     Spacer(Modifier.height(20.dp))
                 }
 
-                // Enlace de texto adicional (opcional)
+                // Enlace adicional
                 item {
                     Row(
                         modifier = Modifier
@@ -338,7 +375,7 @@ fun RegisterScreen(
     }
 }
 
-/* ---------- Helpers de UI (etiqueta + OutlinedTextField) ---------- */
+/* ---------- Helpers UI ---------- */
 
 @Composable
 private fun LabeledField(
@@ -399,7 +436,6 @@ private fun LabeledPassword(
     }
 }
 
-/* ---------------- PREVIEW ---------------- */
 @Preview(showBackground = true)
 @Composable
 private fun RegisterScreenPreview() {
