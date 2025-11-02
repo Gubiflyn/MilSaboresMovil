@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectologin005d.ui.home.HomeViewModel
 import androidx.compose.ui.draw.clip
+import com.example.proyectologin005d.ui.home.HomeBottomBar   // 👈 reutilizamos la barra inferior
 
 // Orden EXACTO según tu documento
 private val ORDERED_CATEGORIES = listOf(
@@ -89,6 +90,16 @@ fun CatalogScreen(
                         containerColor = Color.Transparent,
                         titleContentColor = Brown
                     )
+                )
+            },
+            bottomBar = {
+                HomeBottomBar(
+                    current = "catalog",                       // 👈 marca esta pestaña
+                    onHome = { navController.navigate("home") },
+                    onSearch = { /* ya estás en catálogo */ },  // o navController.navigate("catalog")
+                    onHistory = { /* navController.navigate("history") */ },
+                    onProfile = { navController.navigate("profile") },
+                    brown = Brown
                 )
             }
         ) { padding ->
@@ -205,12 +216,3 @@ fun CatalogScreen(
         }
     }
 }
-
-
-
-
-
-
-
-
-

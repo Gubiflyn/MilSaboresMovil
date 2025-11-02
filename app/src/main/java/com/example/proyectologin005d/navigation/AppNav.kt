@@ -21,6 +21,8 @@ import com.example.proyectologin005d.ui.cart.CartViewModel
 import com.example.proyectologin005d.ui.home.HomeViewModel
 import com.example.proyectologin005d.ui.home.HomeViewModelFactory
 
+import com.example.proyectologin005d.ui.profile.ProfileScreen
+
 @Composable
 fun AppNav() {
     val nav = rememberNavController()
@@ -62,6 +64,13 @@ fun AppNav() {
 
         composable("catalog") {
             CatalogScreen(navController = nav, viewModel = homeVm)
+        }
+
+        composable("profile") {
+            ProfileScreen(
+                navController = nav,
+                authViewModel = authVm
+            )
         }
 
         composable(
