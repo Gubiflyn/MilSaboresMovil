@@ -14,8 +14,7 @@ import com.example.proyectologin005d.register.RegisterScreen
 import com.example.proyectologin005d.ui.product.DetailScreen
 import com.example.proyectologin005d.ui.cart.CartScreen
 import com.example.proyectologin005d.ui.home.HomeScreen
-import com.example.proyectologin005d.ui.catalog.CatalogScreen   // ← asegúrate que este package coincida
-
+import com.example.proyectologin005d.ui.catalog.CatalogScreen   // ← asegúrate que este package coincida aaaaaaaaa
 import com.example.proyectologin005d.ui.auth.AuthViewModel
 import com.example.proyectologin005d.ui.cart.CartViewModel
 import com.example.proyectologin005d.ui.home.HomeViewModel
