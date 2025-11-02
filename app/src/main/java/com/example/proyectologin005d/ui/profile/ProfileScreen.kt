@@ -27,48 +27,33 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectologin005d.ui.auth.AuthViewModel
-import com.example.proyectologin005d.ui.home.HomeBottomBar   // 👈 Reutilizamos la barra inferior del Home
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel = viewModel(),
-    authViewModel: com.example.proyectologin005d.ui.auth.AuthViewModel
+    authViewModel: AuthViewModel
 ) {
-    // Colores iguales al HomeScreen
     val Brown = Color(0xFF8B4513)
     val Cream = Color(0xFFFFF5E1)
 
-    // Lee el usuario actual desde tu AuthViewModel (StateFlow<User?>)
     val user by authViewModel.user.collectAsState(initial = null)
 
-    // Sincroniza la VM de perfil cuando cambie el usuario
     LaunchedEffect(user) {
         profileViewModel.setFromUser(user)
     }
 
-    // Estado de UI ya mapeado a tu modelo real
     val ui by profileViewModel.uiState.collectAsState()
 
-    // ---------- UI con mismo fondo y barra inferior ----------
     Scaffold(
-        containerColor = Cream,
-        bottomBar = {
-            HomeBottomBar(
-                current = "profile",
-                onHome = { navController.navigate("home") },
-                onSearch = { navController.navigate("catalog") },
-                onHistory = { navController.navigate("history") }, // 👈 activa historial
-                onProfile = { /* ya estás en perfil */ },
-                brown = Brown
-            )
-        }
+        containerColor = Cream
+        // ❌ Sin bottomBar aquí – lo agrega el wrapper con AppFooter
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Cream)
-                .padding(padding)
+                .padding(padding) // ✅ respeta el footer externo
                 .padding(horizontal = 16.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
@@ -122,7 +107,6 @@ fun ProfileScreen(
                             style = MaterialTheme.typography.bodyMedium
                         )
 
-                        // Edad (si viene)
                         ui.edad?.let { edad ->
                             Spacer(Modifier.height(8.dp))
                             Text(
@@ -131,7 +115,6 @@ fun ProfileScreen(
                             )
                         }
 
-                        // Beneficios / Descuentos detectados
                         val beneficios = buildList {
                             if (ui.tiene50) add("50% por edad (≥ 50)")
                             if (ui.tiene10) add("10% por código FELICES50")

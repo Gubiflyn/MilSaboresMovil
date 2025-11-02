@@ -19,9 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectologin005d.ui.home.HomeViewModel
 import androidx.compose.ui.draw.clip
-import com.example.proyectologin005d.ui.home.HomeBottomBar   // 👈 reutilizamos la barra inferior
 
-// Orden EXACTO según tu documento
+
 private val ORDERED_CATEGORIES = listOf(
     "Tortas Cuadradas",
     "Tortas Circulares",
@@ -39,40 +38,25 @@ fun CatalogScreen(
     navController: NavController,
     viewModel: HomeViewModel
 ) {
-    // ⚠️ No forzamos setCategoria(null) aquí para no vaciar la lista en ciertos VM
     val ui by viewModel.ui.collectAsState()
 
-    // Paleta (clarita)
     val Brown = Color(0xFF8B4513)
     val Cream = Color(0xFFFFF5E1)
-    val CardBg = Color(0xFFFFE6C7)    // beige pastel
-    val TextMain = Color(0xFF3B2A1A)  // café oscuro
-    val TextSub = Color(0xFF4B3621)   // café medio
+    val CardBg = Color(0xFFFFE6C7)
+    val TextMain = Color(0xFF3B2A1A)
+    val TextSub = Color(0xFF4B3621)
 
-    // 👇 NUEVO: elige la lista base correcta según si hay filtro activo
     val base = remember(ui.items, ui.filtrados, ui.filtroCategoria) {
         if (ui.filtroCategoria.isNullOrBlank()) ui.items else ui.filtrados
     }
 
-    // Ordena por categoría (según ORDERED_CATEGORIES) y luego por nombre
     val listaOrdenada = remember(base) {
-        base.sortedWith(
-            compareBy(
-                { catOrderIndex(it.categoria) },
-                { it.nombre }
-            )
-        )
+        base.sortedWith(compareBy({ catOrderIndex(it.categoria) }, { it.nombre }))
     }
 
-    // Agrupa por las categorías reales presentes y ordénalas según ORDERED_CATEGORIES
     val porCategoria = remember(listaOrdenada) {
         val grouped = listaOrdenada.groupBy { it.categoria }
-        val ordenKeys = grouped.keys.sortedWith(
-            compareBy(
-                { catOrderIndex(it) },
-                { it } // alfabético para las no listadas
-            )
-        )
+        val ordenKeys = grouped.keys.sortedWith(compareBy({ catOrderIndex(it) }, { it }))
         ordenKeys.associateWith { grouped[it].orEmpty() }
     }
 
@@ -91,7 +75,11 @@ fun CatalogScreen(
                     title = { Text("Catálogo") },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = Brown)
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Volver",
+                                tint = Brown
+                            )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -99,17 +87,8 @@ fun CatalogScreen(
                         titleContentColor = Brown
                     )
                 )
-            },
-            bottomBar = {
-                HomeBottomBar(
-                    current = "catalog",
-                    onHome = { navController.navigate("home") },
-                    onSearch = { /* ya estás en catálogo */ },
-                    onHistory = { navController.navigate("history") },
-                    onProfile = { navController.navigate("profile") },
-                    brown = Brown
-                )
             }
+
         ) { padding ->
 
             if (ui.loading) {
@@ -122,10 +101,13 @@ fun CatalogScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(padding)
+                        .padding(padding)   // ✅ respeta el espacio del footer
                         .fillMaxSize()
                         .background(Cream),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                    // 👇 EXTRA: colchón grande para que no tape el footer
+                    contentPadding = PaddingValues(
+                        top = 12.dp, start = 16.dp, end = 16.dp, bottom = 136.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 

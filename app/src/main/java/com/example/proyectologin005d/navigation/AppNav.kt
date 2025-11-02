@@ -15,36 +15,34 @@ import androidx.navigation.navArgument
 import com.example.proyectologin005d.login.LoginScreen
 import com.example.proyectologin005d.register.RegisterScreen
 
-import com.example.proyectologin005d.ui.home.HomeScreen
-import com.example.proyectologin005d.ui.catalog.CatalogScreen
-import com.example.proyectologin005d.ui.product.DetailScreen
-import com.example.proyectologin005d.ui.cart.CartScreen
-import com.example.proyectologin005d.ui.profile.ProfileScreen
-import com.example.proyectologin005d.ui.history.HistoryScreen
-
 import com.example.proyectologin005d.ui.auth.AuthViewModel
+import com.example.proyectologin005d.ui.cart.CartViewModel
 import com.example.proyectologin005d.ui.home.HomeViewModel
 import com.example.proyectologin005d.ui.home.HomeViewModelFactory
-import com.example.proyectologin005d.ui.cart.CartViewModel
+
+import com.example.proyectologin005d.ui.common.HomeScreenWithFooter
+import com.example.proyectologin005d.ui.common.CatalogScreenWithFooter
+import com.example.proyectologin005d.ui.common.ProfileScreenWithFooter
+import com.example.proyectologin005d.ui.common.CartScreenWithFooter
+import com.example.proyectologin005d.ui.common.DetailScreenWithFooter
+import com.example.proyectologin005d.ui.common.HistoryScreenWithFooter
 
 @Composable
 fun AppNav() {
     val nav = rememberNavController()
 
-    // ViewModels compartidos en navegación
+    // ViewModels compartidos
     val authVm: AuthViewModel = viewModel()
     val cartVm: CartViewModel = viewModel()
 
-    // HomeViewModel requiere un Factory en tu proyecto
+    // HomeViewModel con factory (tu proyecto lo usa así)
     val appCtx = LocalContext.current.applicationContext
     val homeVm: HomeViewModel = viewModel(factory = HomeViewModelFactory(appCtx))
 
     val user by authVm.user.collectAsState()
 
-    // Mantener carrito alineado al usuario (si tu CartVM lo ocupa)
-    LaunchedEffect(user) {
-        cartVm.setUser(user)
-    }
+    // Alinear carrito con usuario
+    LaunchedEffect(user) { cartVm.setUser(user) }
 
     NavHost(
         navController = nav,
@@ -65,27 +63,21 @@ fun AppNav() {
         }
 
         // REGISTER
-        composable("register") {
-            RegisterScreen(navController = nav)
-        }
+        composable("register") { RegisterScreen(navController = nav) }
 
-        // HOME (requiere viewModel)
-        composable("home") {
-            HomeScreen(navController = nav, viewModel = homeVm)
-        }
+        // HOME + FOOTER
+        composable("home") { HomeScreenWithFooter(navController = nav, vm = homeVm) }
 
-        // CATÁLOGO (requiere viewModel)
-        composable("catalog") {
-            CatalogScreen(navController = nav, viewModel = homeVm)
-        }
+        // CATALOGO + FOOTER
+        composable("catalog") { CatalogScreenWithFooter(navController = nav, vm = homeVm) }
 
-        // DETALLE (requiere 'codigo' y callback onAddToCart)
+        // DETALLE + FOOTER
         composable(
             route = "detail/{codigo}",
             arguments = listOf(navArgument("codigo") { type = NavType.StringType })
         ) { backStackEntry ->
             val codigo = backStackEntry.arguments?.getString("codigo").orEmpty()
-            DetailScreen(
+            DetailScreenWithFooter(
                 navController = nav,
                 codigo = codigo,
                 onAddToCart = { nombre, precio ->
@@ -95,31 +87,23 @@ fun AppNav() {
             )
         }
 
-        // CARRITO (usa el CartViewModel compartido)
+        // CARRITO + FOOTER
         composable("cart") {
-            CartScreen(
+            CartScreenWithFooter(
+                navController = nav,
                 vm = cartVm,
-                onPaid = {
-                    // Navega al historial apenas se complete placeOrder()
-                    nav.navigate("history") {
-                        launchSingleTop = true
-                    }
-                }
+                onPaid = { nav.navigate("history") { launchSingleTop = true } }
             )
         }
 
-        // PERFIL (requiere authViewModel)
-        composable("profile") {
-            ProfileScreen(navController = nav, authViewModel = authVm)
-        }
+        // PERFIL + FOOTER
+        composable("profile") { ProfileScreenWithFooter(navController = nav, authVm = authVm) }
 
-        // HISTORIAL (tu HistoryScreen NO recibe parámetros)
-        composable("history") {
-            HistoryScreen()
-        }
+        // HISTORIAL + FOOTER
+        composable("history") { HistoryScreenWithFooter(navController = nav) }
     }
 
-    // Si cambia el usuario a null (logout), vuelve al login
+    // Logout → vuelve a login
     LaunchedEffect(user) {
         if (user == null) {
             nav.navigate("login") {
