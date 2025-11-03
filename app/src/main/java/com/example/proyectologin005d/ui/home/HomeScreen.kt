@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
@@ -21,6 +20,11 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyectologin005d.R
+import kotlinx.coroutines.delay
+import androidx.compose.material.icons.filled.Search
 
 @Composable
 fun HomeScreen(
@@ -110,6 +116,8 @@ fun HomeScreen(
                     }
                 }
 
+                TortasCarousel(brown = Brown)
+
                 Text(
                     "Destacados de hoy",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -138,7 +146,6 @@ fun HomeScreen(
     }
 }
 
-
 @Composable
 private fun HomeTopBar(
     onBack: () -> Unit,
@@ -148,32 +155,47 @@ private fun HomeTopBar(
     TopAppBar(
         title = {},
         navigationIcon = {
-            androidx.compose.material3.IconButton(onClick = onBack) {
-                androidx.compose.material3.Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Atrás",
-                    tint = brown
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo Mil Sabores",
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(start = 12.dp)
+            )
         },
         actions = {
             TextField(
                 value = "",
                 onValueChange = {},
-                enabled = false,
-                placeholder = { Text("Selecciona el local más cercano") },
+                readOnly = true,
                 singleLine = true,
+                leadingIcon = {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Buscar",
+                        tint = brown
+                    )
+                },
                 colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
                     disabledContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = Color(0x99000000),
-                    disabledPlaceholderColor = Color(0x99000000)
+                    cursorColor = Color.Transparent,
+                    focusedTextColor = Color.Transparent,
+                    unfocusedTextColor = Color.Transparent,
+                    disabledTextColor = Color.Transparent,
+                    focusedPlaceholderColor = Color.Transparent,
+                    unfocusedPlaceholderColor = Color.Transparent
                 ),
                 modifier = Modifier
                     .width(220.dp)
                     .height(40.dp)
                     .clip(RoundedCornerShape(20.dp))
             )
+
             androidx.compose.material3.IconButton(onClick = onCart) {
                 androidx.compose.material3.Icon(
                     imageVector = Icons.Filled.ShoppingCart,
@@ -188,6 +210,8 @@ private fun HomeTopBar(
         )
     )
 }
+
+
 
 @Composable
 private fun FeaturedCard(
@@ -220,6 +244,65 @@ private fun FeaturedCard(
                 contentDescription = "Ver",
                 tint = fg.copy(alpha = 0.9f)
             )
+        }
+    }
+}
+
+@Composable
+private fun TortasCarousel(brown: Color) {
+    val tortaImages = listOf(
+        R.drawable.tor_frutas,
+        R.drawable.tor_cump,
+        R.drawable.tor_vainilla
+    )
+
+    var currentIndex by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(3000)
+            currentIndex = (currentIndex + 1) % tortaImages.size
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+        ) {
+            Image(
+                painter = painterResource(id = tortaImages[currentIndex]),
+                contentDescription = "Torta destacada",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            tortaImages.forEachIndexed { index, _ ->
+                Box(
+                    modifier = Modifier
+                        .size(if (index == currentIndex) 10.dp else 8.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (index == currentIndex) brown
+                            else Color(0xFFDDC4A3)
+                        )
+                )
+                Spacer(Modifier.width(6.dp))
+            }
         }
     }
 }

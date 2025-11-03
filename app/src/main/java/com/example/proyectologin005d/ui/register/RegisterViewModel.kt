@@ -1,5 +1,8 @@
 package com.example.proyectologin005d.ui.register
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectologin005d.data.repository.AuthRepository
@@ -9,7 +12,8 @@ class RegisterViewModel(
     private val repo: AuthRepository = AuthRepository()
 ) : ViewModel() {
 
-    var uiState: RegisterUiState = RegisterUiState()
+    // 🔑 AHORA ES ESTADO OBSERVABLE DE COMPOSE
+    var uiState by mutableStateOf(RegisterUiState())
         private set
 
     fun onNombreChange(v: String) {
