@@ -33,8 +33,10 @@ import com.example.proyectologin005d.ui.home.HomeViewModelFactory
 import com.example.proyectologin005d.data.database.PastelDatabase
 import com.example.proyectologin005d.data.repository.OrderRepository
 
-// Pantalla de animación
+// Pantallas de animación
 import com.example.proyectologin005d.ui.login.LoginAnimationScreen
+import com.example.proyectologin005d.ui.login.GuestAnimationScreen
+import com.example.proyectologin005d.ui.cart.PurchaseSuccessScreen
 
 @Composable
 fun AppNav() {
@@ -84,7 +86,7 @@ fun AppNav() {
 
         // GUEST ANIMATION
         composable("guest_animation") {
-            com.example.proyectologin005d.ui.login.GuestAnimationScreen(navController = nav)
+            GuestAnimationScreen(navController = nav)
         }
 
         // REGISTER
@@ -124,13 +126,21 @@ fun AppNav() {
                 navController = nav,
                 vm = cartVm,
                 onPaid = {
+                    // 1) Guardamos la orden ANTES de mostrar la animación
                     cartVm.placeOrder(userEmail = user?.email)
-                    nav.navigate("history") {
-                        popUpTo("home") { inclusive = false }
+
+                    // 2) Vamos a la pantalla de "Compra exitosa"
+                    nav.navigate("purchase_success") {
+                        popUpTo("cart") { inclusive = true }
                         launchSingleTop = true
                     }
                 }
             )
+        }
+
+        // 🆕 COMPRA EXITOSA
+        composable("purchase_success") {
+            PurchaseSuccessScreen(navController = nav)
         }
 
         // PERFIL
@@ -154,6 +164,7 @@ fun AppNav() {
         }
     }
 }
+
 
 
 
