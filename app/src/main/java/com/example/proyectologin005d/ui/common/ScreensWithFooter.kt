@@ -96,7 +96,6 @@ fun ProfileScreenWithFooter(
     }
 }
 
-
 @Composable
 fun CartScreenWithFooter(
     navController: NavController,
