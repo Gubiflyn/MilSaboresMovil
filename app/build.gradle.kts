@@ -3,10 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    // Agregar esto para habilitar KAPT
-
+    // Habilitar KAPT
     kotlin("kapt")
-
 }
 
 android {
@@ -55,21 +53,20 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    // Dependencia para la navegación con Jetpack Compose
+    // Navegación con Jetpack Compose
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-// Íconos (core opcional) y EXTENDIDOS (¡este es el clave!)
+    // Íconos (core opcional) y EXTENDIDOS
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
 
+    // 🆕 Lottie para animaciones en Compose
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
 
-
-// Dependencias Room
-    implementation("androidx.room:room-runtime:2.6.1")  // Versión actualizada
-    kapt("androidx.room:room-compiler:2.6.1")          // Misma versión
-    implementation("androidx.room:room-ktx:2.6.1")     // Misma versión
-
-
+    // Dependencias Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

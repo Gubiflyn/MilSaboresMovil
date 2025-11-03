@@ -15,7 +15,7 @@ import androidx.navigation.navArgument
 import com.example.proyectologin005d.login.LoginScreen
 import com.example.proyectologin005d.register.RegisterScreen
 
-// Wrappers con footer/tema (los que ya tienes en ui.common)
+// Wrappers con footer/tema
 import com.example.proyectologin005d.ui.common.HomeScreenWithFooter
 import com.example.proyectologin005d.ui.common.CatalogScreenWithFooter
 import com.example.proyectologin005d.ui.common.DetailScreenWithFooter
@@ -29,56 +29,68 @@ import com.example.proyectologin005d.ui.cart.CartViewModel
 import com.example.proyectologin005d.ui.home.HomeViewModel
 import com.example.proyectologin005d.ui.home.HomeViewModelFactory
 
-// DB/Repo del historial (tal cual en tu zip)
+// DB/Repo del historial
 import com.example.proyectologin005d.data.database.PastelDatabase
 import com.example.proyectologin005d.data.repository.OrderRepository
+
+// Pantalla de animación
+import com.example.proyectologin005d.ui.login.LoginAnimationScreen
 
 @Composable
 fun AppNav() {
     val nav = rememberNavController()
 
-    // ViewModels compartidos
     val authVm: AuthViewModel = viewModel()
     val cartVm: CartViewModel = viewModel()
 
-    // HomeViewModel con factory (como en tu proyecto)
     val appCtx = LocalContext.current.applicationContext
     val homeVm: HomeViewModel = viewModel(factory = HomeViewModelFactory(appCtx))
 
     val user by authVm.user.collectAsState()
 
-    // 🔌 Inyectar una vez el OrderRepository al CartViewModel
+    // Inyectar OrderRepository al CartViewModel
     LaunchedEffect(Unit) {
         val db = PastelDatabase.getInstance(appCtx)
         val orderRepo = OrderRepository(db.orderDao())
         cartVm.setOrderRepository(orderRepo)
     }
 
-    // Mantener el carrito alineado al usuario
+    // Mantener carrito alineado al usuario
     LaunchedEffect(user) {
         cartVm.setUser(user)
     }
 
     NavHost(
         navController = nav,
-        startDestination = if (user == null) "login" else "home"
+        // Para probar la animación siempre partimos en login
+        startDestination = "login"
     ) {
         // LOGIN
         composable("login") {
             LoginScreen(
                 navController = nav,
                 onLoginSuccess = { u ->
+                    // Guardamos usuario globalmente
                     authVm.setUser(u)
-                    nav.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                        launchSingleTop = true
-                    }
+                    // NAVEGACIÓN A LA ANIMACIÓN SE HACE EN LoginScreen
                 }
             )
         }
 
+        // LOGIN ANIMATION
+        composable("login_animation") {
+            LoginAnimationScreen(navController = nav)
+        }
+
+        // GUEST ANIMATION
+        composable("guest_animation") {
+            com.example.proyectologin005d.ui.login.GuestAnimationScreen(navController = nav)
+        }
+
         // REGISTER
-        composable("register") { RegisterScreen(navController = nav) }
+        composable("register") {
+            RegisterScreen(navController = nav)
+        }
 
         // HOME
         composable("home") {
@@ -112,7 +124,6 @@ fun AppNav() {
                 navController = nav,
                 vm = cartVm,
                 onPaid = {
-                    // 💾 Guardar orden (usa totales actuales) y navegar a historial
                     cartVm.placeOrder(userEmail = user?.email)
                     nav.navigate("history") {
                         popUpTo("home") { inclusive = false }
@@ -133,7 +144,7 @@ fun AppNav() {
         }
     }
 
-    // Logout → Login
+    // Logout → Login (lo dejamos por si usas cerrar sesión en otra parte)
     LaunchedEffect(user) {
         if (user == null) {
             nav.navigate("login") {
@@ -143,3 +154,6 @@ fun AppNav() {
         }
     }
 }
+
+
+

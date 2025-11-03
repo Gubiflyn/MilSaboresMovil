@@ -28,7 +28,8 @@ import com.example.proyectologin005d.R
 import com.example.proyectologin005d.data.model.User
 import com.example.proyectologin005d.ui.login.LoginUiState
 import com.example.proyectologin005d.ui.login.LoginViewModel
-import android.util.Patterns // ← CORRECTO
+import android.util.Patterns
+import android.util.Log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +110,7 @@ fun LoginScreen(
 
             Spacer(Modifier.height(24.dp))
 
+            // ---------- EMAIL ----------
             Text(
                 text = "Email",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -139,6 +141,7 @@ fun LoginScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // ---------- PASSWORD ----------
             Text(
                 text = "Password",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -172,6 +175,7 @@ fun LoginScreen(
                 )
             )
 
+            // ---------- ERROR DE LOGIN ----------
             state.error?.let {
                 Spacer(Modifier.height(8.dp))
                 Text(
@@ -183,10 +187,18 @@ fun LoginScreen(
 
             Spacer(Modifier.height(24.dp))
 
+            // ---------- BOTÓN INICIAR SESIÓN ----------
             Button(
                 onClick = {
-                    if (emailValid && passValid) {
-                        vm.submit { u -> onLoginSuccess(u) }
+                    if (emailValid && passValid && !state.isLoading) {
+                        vm.submit { user ->
+                            Log.d("LoginScreen", "LOGIN OK, navegando a animación")
+                            onLoginSuccess(user)
+                            navController.navigate("login_animation") {
+                                popUpTo("login") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
                     }
                 },
                 enabled = !state.isLoading && emailValid && passValid,
@@ -207,8 +219,14 @@ fun LoginScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // ---------- INVITADO (AHORA CON ANIMACIÓN 👀) ----------
             OutlinedButton(
-                onClick = { navController.navigate("home") },
+                onClick = {
+                    navController.navigate("guest_animation") {
+                        popUpTo("login") { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -220,6 +238,7 @@ fun LoginScreen(
             }
 
             Spacer(Modifier.height(24.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -247,3 +266,6 @@ fun LoginScreenPreview() {
     val nav = rememberNavController()
     LoginScreen(navController = nav, onLoginSuccess = {})
 }
+
+
+
