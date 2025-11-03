@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.proyectologin005d.ui.cart.LineaCarrito
 import androidx.compose.ui.graphics.Color
 
-// Paleta consistente
+
 private val Brown = Color(0xFF8B4513)
 private val Cream = Color(0xFFFFF5E1)
 private val CardBg = Color(0xFFFFE6C7)
@@ -37,7 +37,6 @@ fun CartScreen(
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
 
-        // Lista o vacío
         if (items.isEmpty()) {
             Box(
                 modifier = Modifier
@@ -65,7 +64,6 @@ fun CartScreen(
             }
         }
 
-        // Totales
         Card(
             colors = CardDefaults.cardColors(containerColor = CardBg),
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
@@ -91,10 +89,8 @@ fun CartScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // Botón pagar
         Button(
             onClick = {
-                // La VM guarda la orden y limpia; AppNav navega al historial por onPaid
                 onPaid()
             },
             enabled = items.isNotEmpty(),
@@ -110,7 +106,7 @@ fun CartScreen(
             Text("Pagar", fontWeight = FontWeight.Bold)
         }
 
-        Spacer(Modifier.height(8.dp)) // respiro sobre el footer
+        Spacer(Modifier.height(8.dp))
     }
 }
 

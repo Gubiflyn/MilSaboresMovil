@@ -50,61 +50,49 @@ fun AppNav() {
 
     val user by authVm.user.collectAsState()
 
-    // Inyectar OrderRepository al CartViewModel
     LaunchedEffect(Unit) {
         val db = PastelDatabase.getInstance(appCtx)
         val orderRepo = OrderRepository(db.orderDao())
         cartVm.setOrderRepository(orderRepo)
     }
 
-    // Mantener carrito alineado al usuario
     LaunchedEffect(user) {
         cartVm.setUser(user)
     }
 
     NavHost(
         navController = nav,
-        // Para probar la animación siempre partimos en login
         startDestination = "login"
     ) {
-        // LOGIN
         composable("login") {
             LoginScreen(
                 navController = nav,
                 onLoginSuccess = { u ->
-                    // Guardamos usuario globalmente
                     authVm.setUser(u)
-                    // NAVEGACIÓN A LA ANIMACIÓN SE HACE EN LoginScreen
                 }
             )
         }
 
-        // LOGIN ANIMATION
         composable("login_animation") {
             LoginAnimationScreen(navController = nav)
         }
 
-        // GUEST ANIMATION
         composable("guest_animation") {
             GuestAnimationScreen(navController = nav)
         }
 
-        // REGISTER
         composable("register") {
             RegisterScreen(navController = nav)
         }
 
-        // HOME
         composable("home") {
             HomeScreenWithFooter(navController = nav, vm = homeVm)
         }
 
-        // CATÁLOGO
         composable("catalog") {
             CatalogScreenWithFooter(navController = nav, vm = homeVm)
         }
 
-        // DETALLE
         composable(
             route = "detail/{codigo}",
             arguments = listOf(navArgument("codigo") { type = NavType.StringType })
@@ -120,16 +108,13 @@ fun AppNav() {
             )
         }
 
-        // CARRITO
         composable("cart") {
             CartScreenWithFooter(
                 navController = nav,
                 vm = cartVm,
                 onPaid = {
-                    // 1) Guardamos la orden ANTES de mostrar la animación
                     cartVm.placeOrder(userEmail = user?.email)
 
-                    // 2) Vamos a la pantalla de "Compra exitosa"
                     nav.navigate("purchase_success") {
                         popUpTo("cart") { inclusive = true }
                         launchSingleTop = true
@@ -138,23 +123,19 @@ fun AppNav() {
             )
         }
 
-        // 🆕 COMPRA EXITOSA
         composable("purchase_success") {
             PurchaseSuccessScreen(navController = nav)
         }
 
-        // PERFIL
         composable("profile") {
             ProfileScreenWithFooter(navController = nav, authVm = authVm)
         }
 
-        // HISTORIAL
         composable("history") {
             HistoryScreenWithFooter(navController = nav)
         }
     }
 
-    // Logout → Login (lo dejamos por si usas cerrar sesión en otra parte)
     LaunchedEffect(user) {
         if (user == null) {
             nav.navigate("login") {

@@ -14,7 +14,7 @@ interface PastelDao {
     suspend fun getAll(): List<Pastel>
 
     @Query("SELECT * FROM pasteles")
-    fun observeAll(): Flow<List<Pastel>>   // 👈 NUEVO: flujo en tiempo real
+    fun observeAll(): Flow<List<Pastel>>   
 
     @Query("SELECT COUNT(*) FROM pasteles")
     suspend fun count(): Int

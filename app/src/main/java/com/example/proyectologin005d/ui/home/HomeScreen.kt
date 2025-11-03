@@ -55,23 +55,21 @@ fun HomeScreen(
             containerColor = Cream,
             topBar = {
                 HomeTopBar(
-                    onBack = { /* si luego quieres manejar back */ },
+                    onBack = { },
                     onCart = { navController.navigate("cart") },
                     brown = Brown
                 )
             }
-            // ❌ Sin bottomBar aquí – lo agrega el wrapper con AppFooter
         ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)   // ✅ respeta el espacio del footer externo
+                    .padding(paddingValues)
                     .background(Cream)
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                /* ---------- Hero banner con overlay ---------- */
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,7 +110,6 @@ fun HomeScreen(
                     }
                 }
 
-                /* ---------- Destacados de hoy ---------- */
                 Text(
                     "Destacados de hoy",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -141,7 +138,6 @@ fun HomeScreen(
     }
 }
 
-/* ============== UI helpers ============== */
 
 @Composable
 private fun HomeTopBar(

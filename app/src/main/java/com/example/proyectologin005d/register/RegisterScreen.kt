@@ -47,7 +47,6 @@ fun RegisterScreen(
     var codDesc by remember { mutableStateOf("") }
     var localError by remember { mutableStateOf<String?>(null) }
 
-    // ---- Validaciones visibles ----
     val emailValid by remember(state.email) {
         mutableStateOf(
             state.email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(state.email).matches()
@@ -112,7 +111,6 @@ fun RegisterScreen(
                     .padding(horizontal = 20.dp),
                 contentPadding = PaddingValues(bottom = 28.dp)
             ) {
-                // Logo + título
                 item {
                     Spacer(Modifier.height(48.dp))
                     Row(
@@ -140,7 +138,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(16.dp))
                 }
 
-                // Nombres (VM)
                 item {
                     LabeledField(
                         label = "Nombres *",
@@ -151,7 +148,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Apellidos
                 item {
                     LabeledField(
                         label = "Apellidos *",
@@ -162,7 +158,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Email (VM)
                 item {
                     LabeledField(
                         label = "Correo *",
@@ -176,7 +171,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Password (VM)
                 item {
                     LabeledPassword(
                         label = "Contraseña *",
@@ -188,7 +182,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Confirmar Password (VM)
                 item {
                     LabeledPassword(
                         label = "Confirmar contraseña *",
@@ -200,7 +193,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Teléfono
                 item {
                     LabeledField(
                         label = "Teléfono",
@@ -212,7 +204,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Fecha de nacimiento
                 item {
                     LabeledField(
                         label = "Fecha de nacimiento *",
@@ -225,7 +216,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Dirección
                 item {
                     LabeledField(
                         label = "Dirección *",
@@ -236,7 +226,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Región
                 item {
                     LabeledField(
                         label = "Región *",
@@ -247,7 +236,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Comuna
                 item {
                     LabeledField(
                         label = "Comuna *",
@@ -258,7 +246,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Código de descuento (opcional)
                 item {
                     LabeledField(
                         label = "Código de descuento (opcional)",
@@ -270,7 +257,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(8.dp))
                 }
 
-                // Mensaje de error (local o del VM)
                 item {
                     val error = localError ?: state.error
                     if (error != null) {
@@ -283,7 +269,6 @@ fun RegisterScreen(
                     }
                 }
 
-                // Botón Registrarse
                 item {
                     Button(
                         onClick = {
@@ -325,7 +310,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(12.dp))
                 }
 
-                // Botón secundario: Iniciar sesión
                 item {
                     OutlinedButton(
                         onClick = {
@@ -348,7 +332,6 @@ fun RegisterScreen(
                     Spacer(Modifier.height(20.dp))
                 }
 
-                // Enlace adicional
                 item {
                     Row(
                         modifier = Modifier
@@ -375,7 +358,6 @@ fun RegisterScreen(
     }
 }
 
-/* ---------- Helpers UI ---------- */
 
 @Composable
 private fun LabeledField(

@@ -22,7 +22,7 @@ import com.example.proyectologin005d.ui.profile.ProfileScreen
 import com.example.proyectologin005d.ui.auth.AuthViewModel
 import androidx.compose.ui.graphics.Color
 
-// Paleta MilSabores
+
 private val Brown = Color(0xFF8B4513)
 private val Cream = Color(0xFFFFF5E1)
 private val TextMain = Color(0xFF3B2A1A)
@@ -38,7 +38,6 @@ fun themeContent(content: @Composable () -> Unit) {
             onSurface = TextMain
         )
     ) {
-        // ✅ Surface asegura fondo crema aunque el hijo no lo ponga
         Surface(modifier = Modifier.fillMaxSize(), color = Cream) {
             content()
         }

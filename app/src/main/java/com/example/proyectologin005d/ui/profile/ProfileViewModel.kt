@@ -10,10 +10,6 @@ class ProfileViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState
 
-    /**
-     * user == null  -> Sesión de invitado
-     * user != null  -> Pobla con los campos reales de tu modelo
-     */
     fun setFromUser(user: User?) {
         if (user == null) {
             _uiState.value = ProfileUiState(isGuest = true)
@@ -24,8 +20,8 @@ class ProfileViewModel : ViewModel() {
                 email = user.email,
                 edad = user.edad,
                 codigoDescuento = user.codigoDescuento,
-                tiene50 = user.tiene50, // (edad >= 50)
-                tiene10 = user.tiene10  // (codigoDescuento == "FELICES50")
+                tiene50 = user.tiene50,
+                tiene10 = user.tiene10
             )
         }
     }

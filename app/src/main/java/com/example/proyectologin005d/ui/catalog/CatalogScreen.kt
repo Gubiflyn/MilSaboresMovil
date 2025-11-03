@@ -101,10 +101,9 @@ fun CatalogScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(padding)   // ✅ respeta el espacio del footer
+                        .padding(padding)
                         .fillMaxSize()
                         .background(Cream),
-                    // 👇 EXTRA: colchón grande para que no tape el footer
                     contentPadding = PaddingValues(
                         top = 12.dp, start = 16.dp, end = 16.dp, bottom = 136.dp
                     ),

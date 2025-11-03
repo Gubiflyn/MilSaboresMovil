@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ProductImage(
-    nombreDrawable: String?,   // ejemplo: "tc001"
+    nombreDrawable: String?,
     modifier: Modifier = Modifier
 ) {
     val ctx = LocalContext.current

@@ -25,7 +25,6 @@ class HomeViewModel(
     val ui: StateFlow<HomeUiState> = _ui
 
     init {
-        // 1) Seed si está vacío
         viewModelScope.launch {
             try {
                 repo.seedIfEmpty()
@@ -33,7 +32,6 @@ class HomeViewModel(
                 _ui.value = _ui.value.copy(loading = false, error = e.message)
             }
         }
-        // 2) Observar cambios de Room en tiempo real
         viewModelScope.launch {
             repo.observeAll().collectLatest { list ->
                 _ui.value = _ui.value.copy(
@@ -55,6 +53,5 @@ class HomeViewModel(
     }
 
     fun refresh() {
-        // opcional; ya no es crítico porque observeAll() mantiene la UI al día
     }
 }

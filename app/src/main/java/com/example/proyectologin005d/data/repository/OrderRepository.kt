@@ -30,7 +30,7 @@ class OrderRepository(private val dao: OrderDao) {
         return id
     }
 
-    // ---- Limpieza ----
+
     suspend fun clearAllForUser(email: String) = dao.clearUserHistory(email)
     suspend fun clearInvalidForUser(email: String) = dao.clearInvalidByUser(email)
 }

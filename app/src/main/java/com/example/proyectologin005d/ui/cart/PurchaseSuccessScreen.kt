@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun PurchaseSuccessScreen(navController: NavController) {
-    // Animación desde assets/purchase_success.json
     val composition by rememberLottieComposition(
         LottieCompositionSpec.Asset("purchase_success.json")
     )
@@ -24,7 +23,6 @@ fun PurchaseSuccessScreen(navController: NavController) {
         iterations = 1
     )
 
-    // Espera 2.5s y va al historial
     LaunchedEffect(Unit) {
         delay(2500)
         navController.navigate("history") {
@@ -36,7 +34,7 @@ fun PurchaseSuccessScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFF5E1)), // fondo crema
+            .background(Color(0xFFFFF5E1)),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -47,7 +45,7 @@ fun PurchaseSuccessScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "¡Compra exitosa! 🎉",
+                text = "¡Compra exitosa! ",
                 color = Color(0xFF8B4513), // café
                 style = MaterialTheme.typography.headlineSmall
             )

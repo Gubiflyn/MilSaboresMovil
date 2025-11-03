@@ -49,7 +49,6 @@ fun HistoryScreen() {
             TopAppBar(
                 title = { Text("Mi Historial") },
                 actions = {
-                    // 🔹 Solo borrar TODO el historial
                     IconButton(onClick = { vm.clearAllForCurrentUser() }) {
                         Icon(Icons.Default.Delete, contentDescription = "Borrar todo")
                     }
@@ -69,7 +68,6 @@ fun HistoryScreen() {
         ) {
             Column(Modifier.fillMaxSize()) {
 
-                // Debug bar (puedes quitarla si no la necesitas)
                 val aggText = state.aggregates.entries.joinToString(prefix="{", postfix="}") {
                     "${it.key}:(items=${it.value.itemsCount},total=${it.value.total})"
                 }
@@ -82,14 +80,12 @@ fun HistoryScreen() {
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 )
 
-                // Cargando
                 AnimatedVisibility(visible = state.loading, enter = fadeIn(), exit = fadeOut()) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(color = brown)
                     }
                 }
 
-                // Sin compras
                 AnimatedVisibility(
                     visible = !state.loading && state.orders.isEmpty(),
                     enter = fadeIn() + expandVertically(),
@@ -107,7 +103,6 @@ fun HistoryScreen() {
                     }
                 }
 
-                // Lista de compras
                 AnimatedVisibility(
                     visible = state.orders.isNotEmpty(),
                     enter = fadeIn() + expandVertically(),

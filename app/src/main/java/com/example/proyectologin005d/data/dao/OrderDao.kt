@@ -21,7 +21,6 @@ data class OrderWithItems(
 @Dao
 interface OrderDao {
 
-    // --- Lectura ---
     @Query("SELECT * FROM orders WHERE userEmail = :email ORDER BY fechaMillis DESC")
     fun observeOrdersByUser(email: String): Flow<List<Order>>
 
@@ -49,7 +48,6 @@ interface OrderDao {
         return id
     }
 
-    // --- Limpieza / borrado ---
     @Query("""
         DELETE FROM order_items 
         WHERE orderId IN (SELECT id FROM orders WHERE userEmail = :email)

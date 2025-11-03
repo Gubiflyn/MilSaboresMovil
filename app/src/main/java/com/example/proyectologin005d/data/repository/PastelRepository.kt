@@ -17,7 +17,7 @@ class PastelRepository(private val dao: PastelDao) {
     }
 
     fun observeAll(): Flow<List<Pastel>> {
-        return dao.observeAll()           // 👈 NUEVO
+        return dao.observeAll()
     }
 
     suspend fun getByCodigo(codigo: String): Pastel? {

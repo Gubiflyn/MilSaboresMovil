@@ -96,7 +96,7 @@ fun DetailScreen(
                     Button(
                         onClick = {
                             val p = pastel ?: return@Button
-                            onAddToCart(p.nombre, p.precio) // <- agrega al MISMO cartVm
+                            onAddToCart(p.nombre, p.precio)
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("Agregar al carrito") }

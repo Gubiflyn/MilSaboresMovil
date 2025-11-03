@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "CartVM"
 
-// Modelo simple de línea y totales
+
 data class LineaCarrito(val nombre: String, val precio: Int, val cantidad: Int)
 data class Totales(val subtotal: Int, val descuento: Int, val total: Int)
 
@@ -27,19 +27,19 @@ class CartViewModel : ViewModel() {
 
     private var user: User? = null
 
-    // Repo para guardar órdenes en Room
+
     private var orderRepo: OrderRepository? = null
     fun setOrderRepository(repo: OrderRepository) {
         orderRepo = repo
     }
 
-    /** Se llama desde AppNav al iniciar/cerrar sesión */
+
     fun setUser(u: User?) {
         user = u
         actualizarTotales()
     }
 
-    /** Agrega productos al carrito */
+
     fun add(nombre: String, precio: Int) {
         val lista = _items.value.toMutableList()
         val idx = lista.indexOfFirst { it.nombre == nombre }
@@ -53,7 +53,6 @@ class CartViewModel : ViewModel() {
         actualizarTotales()
     }
 
-    /** Quita un producto o reduce cantidad */
     fun remove(nombre: String) {
         val lista = _items.value.toMutableList()
         val idx = lista.indexOfFirst { it.nombre == nombre }
@@ -66,13 +65,11 @@ class CartViewModel : ViewModel() {
         actualizarTotales()
     }
 
-    /** Limpia el carrito */
     fun clear() {
         _items.value = emptyList()
         actualizarTotales()
     }
 
-    /** Calcula totales y descuentos según usuario */
     private fun actualizarTotales() {
         val subtotal = _items.value.sumOf { it.precio * it.cantidad }
         val descuento = when {
@@ -88,16 +85,16 @@ class CartViewModel : ViewModel() {
     fun debugTiene50() = (user?.tiene50 == true).toString()
     fun debugTiene10() = (user?.tiene10 == true).toString()
 
-    /** Guarda compra en historial y luego limpia carrito */
+
     fun placeOrder(userEmail: String?, onSaved: (() -> Unit)? = null) {
         val email = userEmail ?: return
         val repo = orderRepo ?: return
 
         val itemsOrder = _items.value.mapIndexed { index, line ->
             OrderItem(
-                id = 0L,          // autogenerado por Room
-                orderId = 0L,     // se setea en DAO.insertOrderWithItems
-                codigo = line.nombre, // si no tienes código, usa nombre
+                id = 0L,
+                orderId = 0L,
+                codigo = line.nombre,
                 nombre = line.nombre,
                 precio = line.precio,
                 cantidad = line.cantidad,
@@ -106,15 +103,15 @@ class CartViewModel : ViewModel() {
         }
 
         val resumen = _totales.value
-        val itemsCount = _items.value.sumOf { it.cantidad } // cantidad total de ítems
+        val itemsCount = _items.value.sumOf { it.cantidad }
 
-        // 👉 Guarda el TOTAL CON DESCUENTO
+
         val order = Order(
-            id = 0L, // autogenerado
+            id = 0L,
             userEmail = email,
             fechaMillis = System.currentTimeMillis(),
-            total = resumen.total,          // <— total con descuento
-            itemsCount = itemsCount         // <— suma de cantidades
+            total = resumen.total,
+            itemsCount = itemsCount
         )
 
         viewModelScope.launch {

@@ -16,7 +16,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun GuestAnimationScreen(navController: NavController) {
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.Asset("guest_entry.json") // 🔹 archivo de animación
+        LottieCompositionSpec.Asset("guest_entry.json")
     )
     val progress by animateLottieCompositionAsState(
         composition = composition,
@@ -24,7 +24,7 @@ fun GuestAnimationScreen(navController: NavController) {
     )
 
     LaunchedEffect(Unit) {
-        delay(2000) // 2 segundos y pasa al home
+        delay(2000)
         navController.navigate("home") {
             popUpTo("login") { inclusive = true }
         }
@@ -33,7 +33,7 @@ fun GuestAnimationScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFF5E1)), // fondo crema
+            .background(Color(0xFFFFF5E1)),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

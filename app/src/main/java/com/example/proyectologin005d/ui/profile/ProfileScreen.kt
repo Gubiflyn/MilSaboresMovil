@@ -47,13 +47,13 @@ fun ProfileScreen(
 
     Scaffold(
         containerColor = Cream
-        // ❌ Sin bottomBar aquí – lo agrega el wrapper con AppFooter
+
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Cream)
-                .padding(padding) // ✅ respeta el footer externo
+                .padding(padding)
                 .padding(horizontal = 16.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
@@ -71,7 +71,6 @@ fun ProfileScreen(
             Spacer(Modifier.height(16.dp))
 
             if (ui.isGuest) {
-                // Sesión de invitado
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -90,7 +89,6 @@ fun ProfileScreen(
                     }
                 }
             } else {
-                // Datos del usuario autenticado
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

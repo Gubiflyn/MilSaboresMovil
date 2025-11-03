@@ -88,7 +88,6 @@ class HistoryViewModel(
         }
     }
 
-    // ---- LIMPIEZA ----
     fun clearAllForCurrentUser() {
         val email = _uiState.value.userEmail ?: return
         viewModelScope.launch(Dispatchers.IO) {

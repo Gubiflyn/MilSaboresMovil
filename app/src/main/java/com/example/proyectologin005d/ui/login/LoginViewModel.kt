@@ -20,16 +20,11 @@ class LoginViewModel(
     fun onUsernameChange(v: String) { uiState = uiState.copy(username = v) }
     fun onPasswordChange(v: String) { uiState = uiState.copy(password = v) }
 
-    /**
-     * Autentica y, si es cliente válido, guarda el usuario en SessionManager.
-     * Llama al callback con el User cuando todo ok.
-     */
     fun submit(onSuccess: (User) -> Unit) {
         uiState = uiState.copy(isLoading = true, error = null)
         val email = uiState.username.trim()
         val pass  = uiState.password
 
-        // Admin: sin descuentos, no seteamos usuario de sesión
         if (repo.loginAdmin(email, pass)) {
             uiState = uiState.copy(isLoading = false)
             onSuccess(
@@ -38,10 +33,9 @@ class LoginViewModel(
             return
         }
 
-        // Cliente:
         val user = repo.loginCliente(email, pass)
         if (user != null) {
-            SessionManager.currentUser = user   // <- AQUÍ se fija la sesión
+            SessionManager.currentUser = user
             uiState = uiState.copy(isLoading = false)
             onSuccess(user)
         } else {

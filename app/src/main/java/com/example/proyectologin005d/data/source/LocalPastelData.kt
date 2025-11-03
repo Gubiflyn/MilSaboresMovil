@@ -22,6 +22,5 @@ object LocalPastelData {
             descripcion = "Una mezcla de frutas frescas y crema chantilly sobre un suave bizcocho de vainilla.",
             stock = 8
         )
-        // 🔹 Aquí agregas los demás pasteles desde tu JSON
     )
 }

@@ -41,7 +41,6 @@ fun LoginScreen(
     val state: LoginUiState = vm.uiState
     var showPass by remember { mutableStateOf(false) }
 
-    // ---- Validaciones visibles ----
     val emailValid by remember(state.username) {
         mutableStateOf(
             state.username.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(state.username).matches()
@@ -110,7 +109,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // ---------- EMAIL ----------
             Text(
                 text = "Email",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -141,7 +139,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // ---------- PASSWORD ----------
             Text(
                 text = "Password",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -175,7 +172,6 @@ fun LoginScreen(
                 )
             )
 
-            // ---------- ERROR DE LOGIN ----------
             state.error?.let {
                 Spacer(Modifier.height(8.dp))
                 Text(
@@ -187,7 +183,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // ---------- BOTÓN INICIAR SESIÓN ----------
             Button(
                 onClick = {
                     if (emailValid && passValid && !state.isLoading) {
@@ -219,7 +214,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // ---------- INVITADO (AHORA CON ANIMACIÓN 👀) ----------
             OutlinedButton(
                 onClick = {
                     navController.navigate("guest_animation") {

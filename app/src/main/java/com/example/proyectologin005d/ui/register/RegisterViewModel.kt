@@ -6,7 +6,7 @@ import com.example.proyectologin005d.data.repository.AuthRepository
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val repo: AuthRepository = AuthRepository() // usa tu repo real si ya inyectas
+    private val repo: AuthRepository = AuthRepository()
 ) : ViewModel() {
 
     var uiState: RegisterUiState = RegisterUiState()
@@ -30,7 +30,6 @@ class RegisterViewModel(
 
     fun submit(onSuccess: () -> Unit) {
         val s = uiState
-        // Validaciones básicas
         if (s.nombre.isBlank()) return setError("Ingresa tu nombre")
         if (!s.email.contains("@")) return setError("Email no válido")
         if (s.password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres")
@@ -38,7 +37,6 @@ class RegisterViewModel(
 
         uiState = uiState.copy(isLoading = true, error = null)
 
-        // Aunque el repo es síncrono (Boolean), lo dejamos en una corrutina por si luego lo cambias a red/DB
         viewModelScope.launch {
             val ok: Boolean = repo.register(s.nombre, s.email, s.password)
 

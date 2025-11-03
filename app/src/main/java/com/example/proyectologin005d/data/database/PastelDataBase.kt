@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import com.example.proyectologin005d.data.dao.PastelDao
 import com.example.proyectologin005d.data.model.Pastel
 
-// ⬇️ Agregados para historial
 import com.example.proyectologin005d.data.model.Order
 import com.example.proyectologin005d.data.model.OrderItem
 import com.example.proyectologin005d.data.dao.OrderDao
@@ -15,7 +14,6 @@ import com.example.proyectologin005d.data.dao.OrderDao
 @Database(
     entities = [
         Pastel::class,
-        // ⬇️ Agregados para historial
         Order::class,
         OrderItem::class
     ],
@@ -35,7 +33,7 @@ abstract class PastelDatabase : RoomDatabase() {
                     PastelDatabase::class.java,
                     "pasteles.db"
                 )
-                    .fallbackToDestructiveMigration()   // ⬅️ fuerza recrear si hay cambios
+                    .fallbackToDestructiveMigration()
                     .build().also { INSTANCE = it }
             }
     }

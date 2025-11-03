@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun LoginAnimationScreen(navController: NavController) {
-    // Cargar animación desde assets/login_success.json
     val composition by rememberLottieComposition(
         LottieCompositionSpec.Asset("login_success.json")
     )
@@ -24,7 +23,6 @@ fun LoginAnimationScreen(navController: NavController) {
         iterations = 1
     )
 
-    // Espera 2.5 segundos y navega a Home
     LaunchedEffect(Unit) {
         delay(2500)
         navController.navigate("home") {
@@ -33,11 +31,10 @@ fun LoginAnimationScreen(navController: NavController) {
         }
     }
 
-    // Pantalla principal con fondo crema y texto café
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFF5E1)), // crema
+            .background(Color(0xFFFFF5E1)),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -49,7 +46,7 @@ fun LoginAnimationScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Bienvenido a Mil Sabores!!",
-                color = Color(0xFF8B4513), // café
+                color = Color(0xFF8B4513),
                 style = MaterialTheme.typography.headlineSmall
             )
         }
