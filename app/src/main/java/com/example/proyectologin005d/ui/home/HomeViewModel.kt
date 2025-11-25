@@ -25,13 +25,19 @@ class HomeViewModel(
     val ui: StateFlow<HomeUiState> = _ui
 
     init {
+        // 1️⃣ Primero sincronizamos desde la API REST → Room
         viewModelScope.launch {
             try {
-                repo.seedIfEmpty()
+                repo.syncFromRemote()
             } catch (e: Exception) {
-                _ui.value = _ui.value.copy(loading = false, error = e.message)
+                _ui.value = _ui.value.copy(
+                    loading = false,
+                    error = "Error al sincronizar datos: ${e.message}"
+                )
             }
         }
+
+        // 2️⃣ Luego observamos en vivo la base local
         viewModelScope.launch {
             repo.observeAll().collectLatest { list ->
                 _ui.value = _ui.value.copy(
@@ -53,5 +59,17 @@ class HomeViewModel(
     }
 
     fun refresh() {
+        // Podrías volver a llamar a syncFromRemote() aquí si quieres botón de refresco
+        viewModelScope.launch {
+            _ui.value = _ui.value.copy(loading = true)
+            try {
+                repo.syncFromRemote()
+            } catch (e: Exception) {
+                _ui.value = _ui.value.copy(
+                    loading = false,
+                    error = "Error al actualizar: ${e.message}"
+                )
+            }
+        }
     }
 }

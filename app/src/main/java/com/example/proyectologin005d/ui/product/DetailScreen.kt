@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.example.proyectologin005d.data.database.PastelDatabase
 import com.example.proyectologin005d.data.model.Pastel
 import com.example.proyectologin005d.data.repository.PastelRepository
+import com.example.proyectologin005d.data.source.remote.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,7 +33,10 @@ fun DetailScreen(
 
     LaunchedEffect(codigo) {
         try {
-            val repo = PastelRepository(PastelDatabase.getInstance(ctx).pastelDao())
+            val repo = PastelRepository(
+                dao = PastelDatabase.getInstance(ctx).pastelDao(),
+                api = ApiClient.pastelApi
+            )
             pastel = withContext(Dispatchers.IO) { repo.getByCodigo(codigo) }
         } catch (e: Exception) {
             error = e.message
@@ -47,7 +51,10 @@ fun DetailScreen(
                 title = { Text("Detalle de producto") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver"
+                        )
                     }
                 }
             )
@@ -61,7 +68,11 @@ fun DetailScreen(
         ) {
             when {
                 loading -> LinearProgressIndicator(Modifier.fillMaxWidth())
-                error != null -> Text("Error: $error", color = MaterialTheme.colorScheme.error)
+                error != null -> Text(
+                    "Error: $error",
+                    color = MaterialTheme.colorScheme.error
+                )
+
                 pastel == null -> Text("Producto no encontrado.")
                 else -> {
                     val imgId = remember(pastel!!.imagen) {
@@ -81,7 +92,10 @@ fun DetailScreen(
                         Spacer(Modifier.height(12.dp))
                     }
 
-                    Text(pastel!!.nombre, style = MaterialTheme.typography.headlineSmall)
+                    Text(
+                        pastel!!.nombre,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                     Spacer(Modifier.height(6.dp))
                     Text("Código: ${pastel!!.codigo}")
                     Text("Categoría: ${pastel!!.categoria}")
@@ -90,7 +104,10 @@ fun DetailScreen(
                         Text(it)
                         Spacer(Modifier.height(12.dp))
                     }
-                    Text("Precio: $${pastel!!.precio}", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Precio: $${pastel!!.precio}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     Spacer(Modifier.height(16.dp))
 
                     Button(
@@ -99,7 +116,9 @@ fun DetailScreen(
                             onAddToCart(p.nombre, p.precio)
                         },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("Agregar al carrito") }
+                    ) {
+                        Text("Agregar al carrito")
+                    }
                 }
             }
         }

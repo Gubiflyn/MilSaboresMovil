@@ -3,24 +3,30 @@ package com.example.proyectologin005d.data.source
 import com.example.proyectologin005d.data.model.Pastel
 
 object LocalPastelData {
-    val pastelesList = listOf(
+
+    // Lista de datos de ejemplo para sembrar la BD cuando la API falle
+    val seed: List<Pastel> = listOf(
         Pastel(
-            codigo = "TC001",
-            categoria = "Tortas Cuadradas",
-            nombre = "Torta Cuadrada de Chocolate",
-            precio = 45000,
-            imagen = "img/TCChocolate.webp",
-            descripcion = "Deliciosa torta de chocolate con capas de ganache y un toque de avellanas.",
-            stock = 12
+            codigo = "P001",
+            nombre = "Torta Tres Leches",
+            descripcion = "Bizcocho húmedo con mezcla de tres leches",
+            precio = 12990,
+            categoria = "Tortas"
         ),
         Pastel(
-            codigo = "TC002",
-            categoria = "Tortas Cuadradas",
-            nombre = "Torta Cuadrada de Frutas",
-            precio = 50000,
-            imagen = "img/TortaCuadradaDeFrutas.jpg",
-            descripcion = "Una mezcla de frutas frescas y crema chantilly sobre un suave bizcocho de vainilla.",
-            stock = 8
+            codigo = "P002",
+            nombre = "Cheesecake Frutilla",
+            descripcion = "Base de galleta con relleno de queso crema y frutillas",
+            precio = 13990,
+            categoria = "Postres"
+        ),
+        Pastel(
+            codigo = "P003",
+            nombre = "Brazo de Reina",
+            descripcion = "Rollo de bizcocho relleno de manjar",
+            precio = 8990,
+            categoria = "Pastelería clásica"
         )
+        // agrega más si quieres
     )
 }
