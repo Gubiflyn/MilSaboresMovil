@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ListAlt
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,7 +40,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyectologin005d.R
 import kotlinx.coroutines.delay
-import androidx.compose.material.icons.filled.Search
 
 @Composable
 fun HomeScreen(
@@ -76,6 +77,7 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
+                // Banner superior
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -116,6 +118,7 @@ fun HomeScreen(
                     }
                 }
 
+                // Carrusel de tortas
                 TortasCarousel(brown = Brown)
 
                 Text(
@@ -124,6 +127,7 @@ fun HomeScreen(
                     color = TextMain
                 )
 
+                // Tarjetas destacadas (usan FeaturedCard, que ahora está en otro archivo)
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     FeaturedCard(
                         title = "Torta Cuadrada de Chocolate",
@@ -170,7 +174,7 @@ private fun HomeTopBar(
                 readOnly = true,
                 singleLine = true,
                 leadingIcon = {
-                    androidx.compose.material3.Icon(
+                    Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Buscar",
                         tint = brown
@@ -196,8 +200,8 @@ private fun HomeTopBar(
                     .clip(RoundedCornerShape(20.dp))
             )
 
-            androidx.compose.material3.IconButton(onClick = onCart) {
-                androidx.compose.material3.Icon(
+            IconButton(onClick = onCart) {
+                Icon(
                     imageVector = Icons.Filled.ShoppingCart,
                     contentDescription = "Carrito",
                     tint = brown
@@ -209,43 +213,6 @@ private fun HomeTopBar(
             titleContentColor = brown
         )
     )
-}
-
-
-
-@Composable
-private fun FeaturedCard(
-    title: String,
-    desc: String,
-    bg: Color,
-    fg: Color,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = bg),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text(title, color = fg, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(4.dp))
-                Text(desc, color = fg.copy(alpha = 0.9f), fontSize = 13.sp)
-            }
-            androidx.compose.material3.Icon(
-                imageVector = Icons.Filled.ListAlt,
-                contentDescription = "Ver",
-                tint = fg.copy(alpha = 0.9f)
-            )
-        }
-    }
 }
 
 @Composable
