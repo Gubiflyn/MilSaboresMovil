@@ -33,11 +33,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectologin005d.R
 import kotlinx.coroutines.delay
 
@@ -127,7 +131,7 @@ fun HomeScreen(
                     color = TextMain
                 )
 
-                // Tarjetas destacadas (usan FeaturedCard, que ahora está en otro archivo)
+                // Tarjetas destacadas (usan FeaturedCard, que ahora está en otro archivo público)
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     FeaturedCard(
                         title = "Torta Cuadrada de Chocolate",
@@ -174,7 +178,7 @@ private fun HomeTopBar(
                 readOnly = true,
                 singleLine = true,
                 leadingIcon = {
-                    Icon(
+                    androidx.compose.material3.Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Buscar",
                         tint = brown
@@ -272,4 +276,20 @@ private fun TortasCarousel(brown: Color) {
             }
         }
     }
+}
+
+/**
+ * ✅ Preview y también usado por el test HomeScreenBasicUITest
+ */
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    val navController = rememberNavController()
+    val context = LocalContext.current
+    val vm: HomeViewModel = viewModel(factory = HomeViewModelFactory(context))
+
+    HomeScreen(
+        navController = navController,
+        viewModel = vm
+    )
 }
