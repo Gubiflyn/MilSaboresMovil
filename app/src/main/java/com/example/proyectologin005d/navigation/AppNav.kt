@@ -43,6 +43,10 @@ import com.example.proyectologin005d.ui.admin.AdminPastelScreen
 import com.example.proyectologin005d.ui.admin.AdminPastelViewModel
 import com.example.proyectologin005d.ui.admin.AdminPastelViewModelFactory
 
+// --- Ejemplo API externa: JSONPlaceholder ---
+import com.example.proyectologin005d.ui.jsonplaceholder.JsonPlaceholderScreen
+import com.example.proyectologin005d.ui.jsonplaceholder.JsonPlaceholderViewModel
+
 @Composable
 fun AppNav() {
     val nav = rememberNavController()
@@ -100,7 +104,19 @@ fun AppNav() {
                 viewModel = adminVm,
                 onBack = {
                     nav.popBackStack()
+                },
+                onOpenJsonPlaceholder = {
+                    nav.navigate("jsonplaceholder")
                 }
+            )
+        }
+
+        // -------- Ejemplo API externa: JSONPlaceholder --------
+        composable("jsonplaceholder") {
+            val jsonVm: JsonPlaceholderViewModel = viewModel()
+            JsonPlaceholderScreen(
+                viewModel = jsonVm,
+                onBack = { nav.popBackStack() }
             )
         }
 

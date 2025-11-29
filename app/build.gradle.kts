@@ -78,6 +78,13 @@ dependencies {
     // Logging HTTP
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
+    // ⭐ Coroutines (explícito, recomendado)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    // ⭐ ViewModel KTX (ya usas viewModelScope, esto ayuda a que quede claro)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+
     // --------------------------
     // 🧪 DEPENDENCIAS PARA TESTING
     // --------------------------

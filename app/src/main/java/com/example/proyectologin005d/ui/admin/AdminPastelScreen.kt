@@ -14,7 +14,9 @@ import com.example.proyectologin005d.data.model.Pastel
 @Composable
 fun AdminPastelScreen(
     viewModel: AdminPastelViewModel,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    // Callback opcional para abrir la pantalla de ejemplo API externa (JSONPlaceholder)
+    onOpenJsonPlaceholder: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -31,6 +33,11 @@ fun AdminPastelScreen(
                     }
                 },
                 actions = {
+                    // Botón para ir al ejemplo de API externa (lo conectaremos desde AppNav)
+                    TextButton(onClick = onOpenJsonPlaceholder) {
+                        Text("API externa")
+                    }
+
                     // RESET catálogo
                     TextButton(onClick = { viewModel.resetCatalog() }) {
                         Text("Reset")
