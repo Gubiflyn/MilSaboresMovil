@@ -25,11 +25,15 @@ interface PastelDao {
     @Query("SELECT * FROM pasteles WHERE codigo = :codigo LIMIT 1")
     suspend fun getByCodigo(codigo: String): Pastel?
 
-    // NUEVO: insertar/actualizar un solo pastel (CRUD admin)
+    // --- CRUD admin ---
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(pastel: Pastel)
 
-    // NUEVO: eliminar un pastel por código (CRUD admin)
     @Query("DELETE FROM pasteles WHERE codigo = :codigo")
     suspend fun deleteByCodigo(codigo: String)
+
+    // --- Reset completo del catálogo ---
+    @Query("DELETE FROM pasteles")
+    suspend fun deleteAll()
 }

@@ -1,3 +1,4 @@
+// com/example/proyectologin005d/ui/admin/AdminPastelViewModel.kt
 package com.example.proyectologin005d.ui.admin
 
 import androidx.lifecycle.ViewModel
@@ -59,21 +60,29 @@ class AdminPastelViewModel(
     fun crearPastel(pastel: Pastel) {
         viewModelScope.launch {
             repository.crearPastel(pastel)
-            refresh()
         }
     }
 
     fun actualizarPastel(pastel: Pastel) {
         viewModelScope.launch {
             repository.actualizarPastel(pastel)
-            refresh()
         }
     }
 
     fun eliminarPastel(codigo: String) {
         viewModelScope.launch {
             repository.eliminarPastel(codigo)
-            refresh()
+        }
+    }
+
+    // --------- RESET DESDE LOCALPASTELDATA ---------
+
+    fun resetCatalog() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(loading = true, error = null)
+            repository.resetFromLocalSeed()
+            _uiState.value = _uiState.value.copy(loading = false)
+            // observeAll() actualizará la lista automáticamente
         }
     }
 }

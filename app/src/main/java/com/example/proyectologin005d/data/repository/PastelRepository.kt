@@ -4,7 +4,6 @@ package com.example.proyectologin005d.data.repository
 import com.example.proyectologin005d.data.dao.PastelDao
 import com.example.proyectologin005d.data.model.Pastel
 import com.example.proyectologin005d.data.model.toEntity
-import com.example.proyectologin005d.data.source.LocalPastelData
 import com.example.proyectologin005d.data.source.remote.PastelApiService
 import kotlinx.coroutines.flow.Flow
 
@@ -14,8 +13,7 @@ class PastelRepository(
 ) {
 
     /**
-     * Sincroniza los pasteles desde el microservicio REST hacia la base local (Room).
-     * Si falla la API, usa los datos locales de ejemplo como respaldo.
+     * Sincroniza desde el backend. Si falla, usa el seed local SOLO si la tabla está vacía.
      */
     suspend fun syncFromRemote() {
         try {
@@ -23,47 +21,42 @@ class PastelRepository(
             val entidades: List<Pastel> = remotos.map { it.toEntity() }
             dao.insertAll(entidades)
         } catch (e: Exception) {
-            // Fallback: si falla el backend, sembramos datos locales si la tabla está vacía
             if (dao.count() == 0) {
+                // Fallback inicial
                 dao.insertAll(LocalPastelData.seed)
             }
         }
     }
 
-    // --- Lecturas existentes ---
-
-    suspend fun getAllPasteles(): List<Pastel> {
-        return dao.getAll()
-    }
-
-    fun observeAll(): Flow<List<Pastel>> {
-        return dao.observeAll()
-    }
-
-    suspend fun getByCodigo(codigo: String): Pastel? {
-        return dao.getByCodigo(codigo)
-    }
-
-    // --- CRUD para usar desde el rol ADMIN ---
+    // --- RESET 100% LOCAL (LO QUE QUIERES AHORA) ---
 
     /**
-     * Crea un nuevo pastel en el catálogo.
-     * Si ya existe un pastel con el mismo código, será reemplazado.
+     * Borra todos los registros y vuelve a poblar SOLO con LocalPastelData.seed
+     * (las 16 tortas definidas en LocalPastelData).
      */
+    suspend fun resetFromLocalSeed() {
+        dao.deleteAll()
+        dao.insertAll(LocalPastelData.seed)
+    }
+
+    // --- Lecturas ---
+
+    suspend fun getAllPasteles(): List<Pastel> = dao.getAll()
+
+    fun observeAll(): Flow<List<Pastel>> = dao.observeAll()
+
+    suspend fun getByCodigo(codigo: String): Pastel? = dao.getByCodigo(codigo)
+
+    // --- CRUD ADMIN ---
+
     suspend fun crearPastel(pastel: Pastel) {
         dao.insert(pastel)
     }
 
-    /**
-     * Actualiza un pastel existente (mismo comportamiento que crear, por REPLACE).
-     */
     suspend fun actualizarPastel(pastel: Pastel) {
         dao.insert(pastel)
     }
 
-    /**
-     * Elimina un pastel por su código.
-     */
     suspend fun eliminarPastel(codigo: String) {
         dao.deleteByCodigo(codigo)
     }
