@@ -14,7 +14,7 @@ interface PastelDao {
     suspend fun getAll(): List<Pastel>
 
     @Query("SELECT * FROM pasteles")
-    fun observeAll(): Flow<List<Pastel>>   
+    fun observeAll(): Flow<List<Pastel>>
 
     @Query("SELECT COUNT(*) FROM pasteles")
     suspend fun count(): Int
@@ -24,4 +24,12 @@ interface PastelDao {
 
     @Query("SELECT * FROM pasteles WHERE codigo = :codigo LIMIT 1")
     suspend fun getByCodigo(codigo: String): Pastel?
+
+    // NUEVO: insertar/actualizar un solo pastel (CRUD admin)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(pastel: Pastel)
+
+    // NUEVO: eliminar un pastel por código (CRUD admin)
+    @Query("DELETE FROM pasteles WHERE codigo = :codigo")
+    suspend fun deleteByCodigo(codigo: String)
 }

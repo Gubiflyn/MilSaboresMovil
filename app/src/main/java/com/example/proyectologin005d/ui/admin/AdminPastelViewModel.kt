@@ -1,4 +1,4 @@
-package com.example.proyectologin005d.ui.home
+package com.example.proyectologin005d.ui.admin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,24 +9,31 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+data class AdminPastelUiState(
+    val loading: Boolean = true,
+    val lista: List<Pastel> = emptyList(),
+    val error: String? = null
+)
+
+class AdminPastelViewModel(
     private val repository: PastelRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val ui: StateFlow<HomeUiState> = _uiState
+    private val _uiState = MutableStateFlow(AdminPastelUiState())
+    val uiState: StateFlow<AdminPastelUiState> = _uiState
 
     init {
-        observePasteles()
+        observarPasteles()
         refresh()
     }
 
-    private fun observePasteles() {
+    private fun observarPasteles() {
         viewModelScope.launch {
             repository.observeAll().collectLatest { lista ->
                 _uiState.value = _uiState.value.copy(
                     loading = false,
-                    items = lista
+                    lista = lista,
+                    error = null
                 )
             }
         }
@@ -34,39 +41,39 @@ class HomeViewModel(
 
     fun refresh() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(loading = true)
-            repository.syncFromRemote()
-            _uiState.value = _uiState.value.copy(loading = false)
+            try {
+                _uiState.value = _uiState.value.copy(loading = true, error = null)
+                repository.syncFromRemote()
+                _uiState.value = _uiState.value.copy(loading = false)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    loading = false,
+                    error = e.message ?: "Error al sincronizar"
+                )
+            }
         }
     }
 
-    // ---------------------------------------------------------
-    //                CRUD PARA ADMIN
-    // ---------------------------------------------------------
+    // --------- CRUD ADMIN ---------
 
-    fun onCrearPastel(pastel: Pastel) {
+    fun crearPastel(pastel: Pastel) {
         viewModelScope.launch {
             repository.crearPastel(pastel)
             refresh()
         }
     }
 
-    fun onActualizarPastel(pastel: Pastel) {
+    fun actualizarPastel(pastel: Pastel) {
         viewModelScope.launch {
             repository.actualizarPastel(pastel)
             refresh()
         }
     }
 
-    fun onEliminarPastel(codigo: String) {
+    fun eliminarPastel(codigo: String) {
         viewModelScope.launch {
             repository.eliminarPastel(codigo)
             refresh()
         }
     }
 }
-
-data class HomeUiState(
-    val loading: Boolean = true,
-    val items: List<Pastel> = emptyList()
-)

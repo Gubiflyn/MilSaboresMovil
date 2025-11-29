@@ -1,3 +1,4 @@
+// com/example/proyectologin005d/data/repository/PastelRepository.kt
 package com.example.proyectologin005d.data.repository
 
 import com.example.proyectologin005d.data.dao.PastelDao
@@ -29,7 +30,7 @@ class PastelRepository(
         }
     }
 
-    // --- Métodos existentes, ahora usando Room como fuente de verdad ---
+    // --- Lecturas existentes ---
 
     suspend fun getAllPasteles(): List<Pastel> {
         return dao.getAll()
@@ -41,5 +42,29 @@ class PastelRepository(
 
     suspend fun getByCodigo(codigo: String): Pastel? {
         return dao.getByCodigo(codigo)
+    }
+
+    // --- CRUD para usar desde el rol ADMIN ---
+
+    /**
+     * Crea un nuevo pastel en el catálogo.
+     * Si ya existe un pastel con el mismo código, será reemplazado.
+     */
+    suspend fun crearPastel(pastel: Pastel) {
+        dao.insert(pastel)
+    }
+
+    /**
+     * Actualiza un pastel existente (mismo comportamiento que crear, por REPLACE).
+     */
+    suspend fun actualizarPastel(pastel: Pastel) {
+        dao.insert(pastel)
+    }
+
+    /**
+     * Elimina un pastel por su código.
+     */
+    suspend fun eliminarPastel(codigo: String) {
+        dao.deleteByCodigo(codigo)
     }
 }

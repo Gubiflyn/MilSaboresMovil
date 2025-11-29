@@ -10,6 +10,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -18,8 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectologin005d.ui.home.HomeViewModel
-import androidx.compose.ui.draw.clip
-
 
 private val ORDERED_CATEGORIES = listOf(
     "Tortas Cuadradas",
@@ -46,8 +45,9 @@ fun CatalogScreen(
     val TextMain = Color(0xFF3B2A1A)
     val TextSub = Color(0xFF4B3621)
 
-    val base = remember(ui.items, ui.filtrados, ui.filtroCategoria) {
-        if (ui.filtroCategoria.isNullOrBlank()) ui.items else ui.filtrados
+    // AHORA solo usamos los items que vengan del ViewModel
+    val base = remember(ui.items) {
+        ui.items
     }
 
     val listaOrdenada = remember(base) {

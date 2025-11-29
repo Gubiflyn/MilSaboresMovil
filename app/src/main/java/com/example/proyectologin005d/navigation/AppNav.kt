@@ -34,9 +34,14 @@ import com.example.proyectologin005d.data.database.PastelDatabase
 import com.example.proyectologin005d.data.repository.OrderRepository
 
 // Pantallas de animación
-import com.example.proyectologin005d.ui.login.LoginAnimationScreen
 import com.example.proyectologin005d.ui.login.GuestAnimationScreen
+import com.example.proyectologin005d.ui.login.LoginAnimationScreen
 import com.example.proyectologin005d.ui.cart.PurchaseSuccessScreen
+
+// --- Admin: pantalla + VM + factory ---
+import com.example.proyectologin005d.ui.admin.AdminPastelScreen
+import com.example.proyectologin005d.ui.admin.AdminPastelViewModel
+import com.example.proyectologin005d.ui.admin.AdminPastelViewModelFactory
 
 @Composable
 fun AppNav() {
@@ -83,6 +88,20 @@ fun AppNav() {
 
         composable("register") {
             RegisterScreen(navController = nav)
+        }
+
+        // -------- ADMIN: panel CRUD de pasteles --------
+        composable("admin_pasteles") {
+            val adminVm: AdminPastelViewModel = viewModel(
+                factory = AdminPastelViewModelFactory(appCtx)
+            )
+
+            AdminPastelScreen(
+                viewModel = adminVm,
+                onBack = {
+                    nav.popBackStack()
+                }
+            )
         }
 
         composable("home") {
@@ -145,7 +164,3 @@ fun AppNav() {
         }
     }
 }
-
-
-
-

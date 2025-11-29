@@ -41,17 +41,24 @@ fun LoginScreen(
     val state: LoginUiState = vm.uiState
     var showPass by remember { mutableStateOf(false) }
 
+    // --- NUEVO: permitir usuario "admin" sin validar formato de email ---
+    val isAdminUser = state.username.equals("admin", ignoreCase = true)
+
     val emailValid by remember(state.username) {
         mutableStateOf(
-            state.username.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(state.username).matches()
+            state.username.isNotBlank() &&
+                    (isAdminUser || Patterns.EMAIL_ADDRESS.matcher(state.username).matches())
         )
     }
-    val passValid by remember(state.password) { mutableStateOf(state.password.length >= 6) }
+    val passValid by remember(state.password) {
+        mutableStateOf(state.password.length >= 6)
+    }
 
     val emailErrorMsg by remember(state.username) {
         mutableStateOf(
             when {
                 state.username.isBlank() -> "El email es requerido"
+                isAdminUser -> null // no mostramos error si es admin
                 !Patterns.EMAIL_ADDRESS.matcher(state.username).matches() -> "Formato inválido"
                 else -> null
             }
@@ -66,6 +73,9 @@ fun LoginScreen(
             }
         )
     }
+
+    // Botón habilitado (admin o cliente)
+    val canLogin = !state.isLoading && passValid && emailValid
 
     val scheme = darkColorScheme(
         primary = Color(0xFF8B4513),
@@ -185,18 +195,27 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    if (emailValid && passValid && !state.isLoading) {
+                    if (canLogin) {
                         vm.submit { user ->
-                            Log.d("LoginScreen", "LOGIN OK, navegando a animación")
+                            Log.d("LoginScreen", "LOGIN OK")
                             onLoginSuccess(user)
-                            navController.navigate("login_animation") {
-                                popUpTo("login") { inclusive = true }
-                                launchSingleTop = true
+
+                            // --- NUEVO: ruta distinta si es admin ---
+                            if (user.nombre == "Administrador") {
+                                navController.navigate("admin_pasteles") {
+                                    popUpTo("login") { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                navController.navigate("login_animation") {
+                                    popUpTo("login") { inclusive = true }
+                                    launchSingleTop = true
+                                }
                             }
                         }
                     }
                 },
-                enabled = !state.isLoading && emailValid && passValid,
+                enabled = canLogin,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -207,7 +226,7 @@ fun LoginScreen(
                 )
             ) {
                 Text(
-                    text = if (state.isLoading) "Validando..." else "Iniciar Sesión",
+                    text = if (state.isLoading) "Validando." else "Iniciar Sesión",
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -260,6 +279,3 @@ fun LoginScreenPreview() {
     val nav = rememberNavController()
     LoginScreen(navController = nav, onLoginSuccess = {})
 }
-
-
-
