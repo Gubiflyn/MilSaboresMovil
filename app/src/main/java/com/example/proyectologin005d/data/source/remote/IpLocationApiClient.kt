@@ -5,13 +5,10 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-/**
- * Cliente Retrofit dedicado para JSONPlaceholder.
- */
-object JsonPlaceholderApiClient {
+object IpLocationApiClient {
 
-    // Base URL oficial de JSONPlaceholder
-    private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+    // Nueva base URL para ipwho.is
+    private const val BASE_URL = "https://ipwho.is/"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -27,7 +24,7 @@ object JsonPlaceholderApiClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val api: JsonPlaceholderApiService by lazy {
-        retrofit.create(JsonPlaceholderApiService::class.java)
+    val api: IpLocationApiService by lazy {
+        retrofit.create(IpLocationApiService::class.java)
     }
 }

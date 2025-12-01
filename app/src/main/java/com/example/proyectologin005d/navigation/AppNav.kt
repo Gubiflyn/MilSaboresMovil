@@ -47,6 +47,10 @@ import com.example.proyectologin005d.ui.admin.AdminPastelViewModelFactory
 import com.example.proyectologin005d.ui.jsonplaceholder.JsonPlaceholderScreen
 import com.example.proyectologin005d.ui.jsonplaceholder.JsonPlaceholderViewModel
 
+// --- Segunda API externa: ubicación por IP ---
+import com.example.proyectologin005d.ui.location.LocationScreen
+import com.example.proyectologin005d.ui.location.LocationViewModel
+
 @Composable
 fun AppNav() {
     val nav = rememberNavController()
@@ -102,9 +106,7 @@ fun AppNav() {
 
             AdminPastelScreen(
                 viewModel = adminVm,
-                onBack = {
-                    nav.popBackStack()
-                },
+                onBack = { nav.popBackStack() },
                 onOpenJsonPlaceholder = {
                     nav.navigate("jsonplaceholder")
                 }
@@ -116,6 +118,15 @@ fun AppNav() {
             val jsonVm: JsonPlaceholderViewModel = viewModel()
             JsonPlaceholderScreen(
                 viewModel = jsonVm,
+                onBack = { nav.popBackStack() }
+            )
+        }
+
+        // -------- Segunda API externa: ubicación por IP --------
+        composable("location_api") {
+            val locationVm: LocationViewModel = viewModel()
+            LocationScreen(
+                viewModel = locationVm,
                 onBack = { nav.popBackStack() }
             )
         }
@@ -163,7 +174,10 @@ fun AppNav() {
         }
 
         composable("profile") {
-            ProfileScreenWithFooter(navController = nav, authVm = authVm)
+            ProfileScreenWithFooter(
+                navController = nav,
+                authVm = authVm
+            )
         }
 
         composable("history") {

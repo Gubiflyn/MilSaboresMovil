@@ -21,20 +21,20 @@ interface JsonPlaceholderApiService {
     @GET("posts")
     suspend fun getPosts(): List<JsonPlaceholderPostDto>
 
-    // POST: crea un post de prueba (NO se guarda de verdad en el servidor)
+    // POST: crea un post de prueba
     @POST("posts")
     suspend fun createPost(
         @Body post: JsonPlaceholderPostDto
     ): JsonPlaceholderPostDto
 
-    // PUT: actualiza un post de prueba (NO se persiste de verdad)
+    // PUT: actualiza un post de prueba
     @PUT("posts/{id}")
     suspend fun updatePost(
         @Path("id") id: Int,
         @Body post: JsonPlaceholderPostDto
     ): JsonPlaceholderPostDto
 
-    // DELETE: elimina un post de prueba (también simulado)
+    // DELETE: elimina un post de prueba
     @DELETE("posts/{id}")
     suspend fun deletePost(
         @Path("id") id: Int

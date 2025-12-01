@@ -193,7 +193,7 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // ✅ Tarjeta con la info del usuario (igual que antes)
+            // ✅ Tarjeta con la info del usuario
             if (ui.isGuest) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -263,6 +263,16 @@ fun ProfileScreen(
                         }
                     }
                 }
+            }
+
+            // Botón para ir a la pantalla de ubicación (API externa)
+            Spacer(Modifier.height(24.dp))
+
+            Button(
+                onClick = { navController.navigate("location_api") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Ver mi ubicación (API externa)")
             }
         }
     }
