@@ -2,11 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- ✅ PERMISO PARA INTERNET (NECESARIO PARA JSONPlaceholder, API MilSabores, etc.) -->
+    <!-- PERMISO PARA INTERNET (NECESARIO PARA JSONPlaceholder) -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- ✅ PERMISO PARA USAR LA CÁMARA -->
+    <!--  PERMISO PARA USAR LA CÁMARA -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!--  PERMISO PARA USAR LA GPS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <application
         android:allowBackup="true"
