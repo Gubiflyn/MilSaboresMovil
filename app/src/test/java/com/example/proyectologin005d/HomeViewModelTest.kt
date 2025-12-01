@@ -14,7 +14,6 @@ import kotlinx.coroutines.test.runTest
 class HomeViewModelTest : StringSpec({
 
     "HomeViewModel actualiza los items desde repository.observeAll()" {
-
         val fakePasteles = listOf(
             Pastel("C001", "Tortas", "Mil Hojas", 12000),
             Pastel("C002", "Kuchen", "Frambuesa", 8500)

@@ -13,7 +13,7 @@ class HomeListRenderTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun featuredCard_renderiza_titulo_y_descripcion() {
+    fun featuredCard_muestraTituloYDescripcion() {
         composeTestRule.setContent {
             FeaturedCard(
                 title = "Torta de Prueba",
