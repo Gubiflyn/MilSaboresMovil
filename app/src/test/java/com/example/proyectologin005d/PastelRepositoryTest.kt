@@ -7,8 +7,10 @@ import io.kotest.core.spec.style.StringSpec
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PastelRepositoryTest : StringSpec({
 
     "syncFromRemote inserta datos cuando la API devuelve lista válida" {
@@ -16,7 +18,12 @@ class PastelRepositoryTest : StringSpec({
         val fakeApi = mockk<PastelApiService>()
 
         coEvery { fakeApi.getPasteles() } returns listOf(
-            PastelDto("A1", "Tortas", "Selva Negra", 14000)
+            PastelDto(
+                codigo = "A1",
+                categoria = "Tortas",
+                nombre = "Selva Negra",
+                precio = 14000
+            )
         )
 
         val repo = PastelRepository(fakeDao, fakeApi)
@@ -25,7 +32,7 @@ class PastelRepositoryTest : StringSpec({
             repo.syncFromRemote()
         }
 
+        // Verificamos que se llame a insertAll en el DAO
         coVerify { fakeDao.insertAll(any()) }
     }
 })
-//
