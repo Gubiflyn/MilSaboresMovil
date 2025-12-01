@@ -28,3 +28,5 @@ class HomeListRenderTest {
         composeTestRule.onNodeWithText("Descripción de prueba").assertIsDisplayed()
     }
 }
+
+//

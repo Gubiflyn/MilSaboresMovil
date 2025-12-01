@@ -28,3 +28,4 @@ class PastelRepositoryTest : StringSpec({
         coVerify { fakeDao.insertAll(any()) }
     }
 })
+//
