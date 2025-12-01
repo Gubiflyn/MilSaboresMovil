@@ -48,4 +48,4 @@ class HomeViewModelTest : StringSpec({
         vm.ui.value.items.size shouldBe 2
         vm.ui.value.items[0].nombre shouldBe "Mil Hojas"
     }
-})
+})//
