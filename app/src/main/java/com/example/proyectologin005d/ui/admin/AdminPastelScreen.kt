@@ -15,7 +15,6 @@ import com.example.proyectologin005d.data.model.Pastel
 fun AdminPastelScreen(
     viewModel: AdminPastelViewModel,
     onBack: () -> Unit = {},
-    // Callback opcional para abrir la pantalla de ejemplo API externa (JSONPlaceholder)
     onOpenJsonPlaceholder: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -28,17 +27,12 @@ fun AdminPastelScreen(
             TopAppBar(
                 title = { Text("Administrar catálogo de tortas") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text("←")
-                    }
+                    IconButton(onClick = onBack) { Text("←") }
                 },
                 actions = {
-                    // Botón para ir al ejemplo de API externa (lo conectaremos desde AppNav)
                     TextButton(onClick = onOpenJsonPlaceholder) {
                         Text("API externa")
                     }
-
-                    // RESET catálogo
                     TextButton(onClick = { viewModel.resetCatalog() }) {
                         Text("Reset")
                     }
@@ -78,7 +72,9 @@ fun AdminPastelScreen(
                                 pastelEditando = pastel
                                 showDialog = true
                             },
-                            onEliminar = { viewModel.eliminarPastel(pastel.codigo) }
+                            onEliminar = {
+                                viewModel.eliminarPastel(pastel.codigo)
+                            }
                         )
                     }
                 }
@@ -91,11 +87,11 @@ fun AdminPastelScreen(
             pastel = pastelEditando,
             onDismiss = { showDialog = false },
             onSave = { nuevo ->
-                if (pastelEditando == null)
+                if (pastelEditando == null) {
                     viewModel.crearPastel(nuevo)
-                else
+                } else {
                     viewModel.actualizarPastel(nuevo)
-
+                }
                 showDialog = false
             }
         )
@@ -120,6 +116,12 @@ fun PastelAdminItem(
             Text("Precio: $${pastel.precio}")
             Text("Stock: ${pastel.stock}")
 
+
+            val comentario = pastel.descripcion.orEmpty()
+            if (comentario.isNotBlank()) {
+                Text("Comentario: $comentario")
+            }
+
             Spacer(Modifier.height(8.dp))
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -143,6 +145,7 @@ fun PastelCrudDialog(
     var categoria by remember(pastel) { mutableStateOf(pastel?.categoria ?: "") }
     var precioText by remember(pastel) { mutableStateOf(pastel?.precio?.toString() ?: "") }
     var stockText by remember(pastel) { mutableStateOf(pastel?.stock?.toString() ?: "") }
+    var comentario by remember(pastel) { mutableStateOf(pastel?.descripcion ?: "") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -187,6 +190,14 @@ fun PastelCrudDialog(
                     label = { Text("Stock") },
                     singleLine = true
                 )
+
+                OutlinedTextField(
+                    value = comentario,
+                    onValueChange = { comentario = it },
+                    label = { Text("Comentario") },
+                    singleLine = false,
+                    maxLines = 3
+                )
             }
         },
         confirmButton = {
@@ -204,7 +215,7 @@ fun PastelCrudDialog(
                                 precio = precio,
                                 stock = stock,
                                 imagen = pastel?.imagen,
-                                descripcion = pastel?.descripcion
+                                descripcion = comentario
                             )
                         )
                     }
