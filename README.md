@@ -15,7 +15,7 @@
 - Navegación entre pantallas (Login → Home → Admin).  
 - CRUD simulado de productos/pasteles.  
 - Consumo de API externa mediante Retrofit (JSONPlaceholder).  
-- Animaciones funcionales (Lottie).  
+- Animaciones.  
 - Gestión de estado con ViewModel + StateFlow/State.  
 - Arquitectura MVVM con separación clara de capas.  
 - Pruebas unitarias del repositorio.  
